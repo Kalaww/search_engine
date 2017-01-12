@@ -3,5 +3,5 @@
 class MatrixException(Exception):
     pass
 
-class matrixException(Exception):
+class GrapheException(Exception):
     pass
