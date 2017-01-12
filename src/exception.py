@@ -1,0 +1,4 @@
+
+
+class BadOrderMatrixException(Exception):
+    pass
