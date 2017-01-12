@@ -1,6 +1,6 @@
 import numpy as np
 
-from exception import BadOrderMatrixException
+from exception import MatrixException
 
 class Matrix:
 
@@ -25,9 +25,9 @@ class Matrix:
 
     def put(self, row, column, value):
         if row < self.last_row_index:
-            raise BadOrderMatrixException('Try to add row {} after row {}'.format(row, self.last_row_index))
+            raise MatrixException('Try to add row {} after row {}'.format(row, self.last_row_index))
         if row == self.last_row_index and column <= self.last_column_index:
-            raise BadOrderMatrixException('Try to add column {} after column {} in the same row {}'.format(
+            raise MatrixException('Try to add column {} after column {} in the same row {}'.format(
                 column, self.last_column_index, row
             ))
 
@@ -46,7 +46,7 @@ class Matrix:
 
     def put_row(self, row, columns):
         if row < self.last_row_index:
-            raise BadOrderMatrixException('Try to add row {} after row {}'.format(row, self.last_row_index))
+            raise MatrixException('Try to add row {} after row {}'.format(row, self.last_row_index))
 
         value = 1. / float(len(columns))
 
@@ -78,4 +78,16 @@ class Matrix:
         s += '\nI:\n'
         for i in self.indexes:
             s += str(i) + ' '
-        return s
+        return s + '\n'
+
+    def multiply_transpose_with(self, vector):
+        if len(vector) != self.size:
+            raise MatrixException('Vector size is not the same as matrix')
+
+        res = np.zeros(self.size, dtype=np.float32)
+
+        for row in range(0, self.size):
+            for i in range(self.lines[row], self.lines[row+1]):
+                print('res[{}] += values[{}] * vector[{}]'.format(self.indexes[i], i, row))
+                res[self.indexes[i]] += self.values[i] * vector[row]
+        return res

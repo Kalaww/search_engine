@@ -1,4 +1,7 @@
 
 
-class BadOrderMatrixException(Exception):
+class MatrixException(Exception):
+    pass
+
+class matrixException(Exception):
     pass
