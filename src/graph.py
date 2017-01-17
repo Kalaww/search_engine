@@ -49,10 +49,10 @@ class Graph:
                 current_src = src
                 current_succs = [dst]
         self.matrix.end()
-        log.debug('Graph loaded with success')
+        log.info('Graph loaded with success')
 
     def read_line(self, line):
-        match = re.match('(\d+)\s(\d+)', line)
+        match = re.match('(\d+)\s+(\d+)', line)
         if match is None:
             raise GrapheException('Cannot read line "{}" in file {}'.format(line, self.filename))
         src = int(match.group(1))
