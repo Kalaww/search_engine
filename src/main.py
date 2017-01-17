@@ -1,15 +1,31 @@
-import sys
 import logging as log
+from optparse import OptionParser
 
 from graph import Graph
 
 DIR_DATA = '../data/'
 
 
-def main(args):
-    log.basicConfig(level=log.DEBUG)
-    g = Graph(DIR_DATA + 'p2p-Gnutella08.txt')
+def main():
+    op = OptionParser(usage='usage: %prog [options]')
+    op.add_option('-g', '--graph', action='store', type='string', dest='graph_filename',
+                       help='file FILE containing the graph', metavar='FILE')
+    op.add_option('-v', '--verbose', action='store_true', dest='verbose', default=True,
+                       help='verbose mode')
+
+    (options, args) = op.parse_args()
+
+    if options.verbose:
+        log.basicConfig(level=log.DEBUG)
+    else:
+        log.basicConfig(level=log.INFO)
+
+    if not options.graph_filename:
+        op.error('need to specify a graph file')
+        return
+
+    g = Graph(DIR_DATA + options.graph_filename)
 
 
 if __name__ == '__main__':
-    main(sys.argv[:1])
+    main()
