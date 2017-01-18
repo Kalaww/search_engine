@@ -2,8 +2,7 @@ import logging as log
 from optparse import OptionParser
 
 from graph import Graph
-
-DIR_DATA = '../data/'
+from pagerank import Pagerank
 
 
 def main():
@@ -24,8 +23,10 @@ def main():
         op.error('need to specify a graph file')
         return
 
-    g = Graph(DIR_DATA + options.graph_filename)
-
+    g = Graph(options.graph_filename)
+    p = Pagerank(g, 0, zap=0.15)
+    p.run()
+    print(p.vector)
 
 if __name__ == '__main__':
     main()

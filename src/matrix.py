@@ -88,6 +88,5 @@ class Matrix:
 
         for row in range(0, self.size):
             for i in range(self.lines[row], self.lines[row+1]):
-                print('res[{}] += values[{}] * vector[{}]'.format(self.indexes[i], i, row))
                 res[self.indexes[i]] += self.values[i] * vector[row]
         return res
