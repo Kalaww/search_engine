@@ -1,5 +1,6 @@
 import numpy as np
 import logging as log
+import time
 
 
 class Pagerank:
@@ -33,6 +34,7 @@ class Pagerank:
         step = 0
         if self.verbose:
             print('step {}: {}'.format(step, self.vector))
+        start_time = time.time()
         while True:
             r = self.graph.matrix.multiply_transpose_with(self.vector)
             for i in range(len(r)):
@@ -46,4 +48,6 @@ class Pagerank:
 
             if distance < self.epsilon or not self.n_steps is None and step >= self.n_steps:
                 break
-        log.info('Page Rank: run in {} steps'.format(step))
+        diff = time.time() - start_time
+        diff = int(diff * 1000)
+        log.info('Page Rank: run in {} steps in {} ms'.format(step, diff))
