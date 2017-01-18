@@ -15,6 +15,7 @@ class Graph:
         self.is_directed = orientation
         self.filename = filename
         self.matrix = None
+        self.is_loaded = False
 
         self.read_from_file()
 
@@ -39,16 +40,18 @@ class Graph:
         self.matrix = Matrix(self.nb_arcs, self.nb_vertices)
 
         for line in fd.readlines():
-            if line.startswith('#'):
+            if line.startswith('#') or len(line) == 0:
                 continue
             src, dst = self.read_line(line)
             if src == current_src:
                 current_succs.append(dst)
             else:
-                self.matrix.put_row(src, current_succs)
+                self.matrix.put_row(current_src, current_succs)
                 current_src = src
                 current_succs = [dst]
+        self.matrix.put_row(current_src, current_succs)
         self.matrix.end()
+        self.is_loaded = True
         log.info('Graph loaded with success')
 
     def read_line(self, line):
