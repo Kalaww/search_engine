@@ -52,7 +52,7 @@ class Graph:
         self.matrix.put_row(current_src, current_succs)
         self.matrix.end()
         self.is_loaded = True
-        log.info('Graph loaded with success')
+        log.info('Graph successfully loaded')
 
     def read_line(self, line):
         match = re.match('(\d+)\s+(\d+)', line)

@@ -1,6 +1,6 @@
 import numpy as np
 
-from exception import MatrixException
+from search_engine.exception import MatrixException
 
 class Matrix:
 

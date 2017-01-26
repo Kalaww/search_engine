@@ -27,10 +27,10 @@ class Pagerank:
         self.vector[self.start] = 1
         self.is_init = True
 
-    def run(self):
+    def run(self, print_n_step=False):
         if not self.is_init:
             log.error('Page Rank: not initialize correctly')
-            return
+            return None
         step = 0
         if self.verbose:
             print('step {}: {}'.format(step, self.vector))
@@ -50,4 +50,6 @@ class Pagerank:
                 break
         diff = time.time() - start_time
         diff = int(diff * 1000)
-        log.info('Page Rank: run in {} steps in {} ms'.format(step, diff))
+        if print_n_step:
+            print('Page Rank: run in {} steps in {} ms'.format(step, diff))
+        return self.vector
