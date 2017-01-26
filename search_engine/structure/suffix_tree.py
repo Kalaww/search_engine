@@ -56,15 +56,18 @@ class Node:
         self.is_word = is_word
 
     def __contains__(self, value):
-        if self.value.startswith(value):
-            if len(value) == len(self.value):
-                return self.is_word
-            val = value[len(self.value):]
-            if self.children:
-                for child in self.children:
-                    return val in child
-            else:
-                return False
+        if not value.startswith(self.value) and len(self.value) > 0:
+            return False
+
+        if value == self.value:
+            return self.is_word
+
+        val = value[len(self.value):]
+        if len(val) < 1:
+            return False
+        for child in self.children:
+            if val in child: return True
+        return False
 
     def add(self, _value):
         if self.value == _value:
