@@ -44,6 +44,9 @@ class SuffixTree:
     def __len__(self):
         return len(self.root)
 
+    def write(self, file):
+        self.root.write(file)
+
 class Node:
 
     def __init__(self, parent, value, is_word=False):
@@ -97,3 +100,8 @@ class Node:
         if len(self.children) > 0:
             l += np.sum([len(child) for child in self.children])
         return l
+
+    def write(self, file, indentation=''):
+        file.write('{}{} {}'.format(indentation, self.value, '1' if self.is_word else '0'))
+        for child in self.children:
+            child.write(file, indentation+' ')
