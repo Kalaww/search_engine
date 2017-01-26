@@ -8,23 +8,23 @@ Require Python 2
 
 Install the dependencies
 
-```sh
+```
 $ pip install -r requirements.txt
 ```
 
 ## RUN
 Run the program with :
-```sh
+```
 $ python run.sh [options]
 ```
 
 #### PAGE RANK
 The page rank command line :
-```sh
+```
 $ python run.sh pagerank [options]
 ```
 Options :
-```sh
+```
 Options:
   -h, --help            show this help message and exit
   -g FILE, --graph=FILE
