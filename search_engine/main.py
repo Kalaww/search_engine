@@ -24,7 +24,7 @@ def main():
         return
 
     g = Graph(options.graph_filename)
-    p = Pagerank(g, 0, zap=0.15)
+    p = Pagerank(g, 0)
     p.run()
     print(p.vector)
 
