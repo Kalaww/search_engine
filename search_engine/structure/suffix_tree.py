@@ -11,6 +11,38 @@ def from_sorted_dictionnary(dictionnary):
         tree.add(word)
     return tree
 
+def from_file(filename):
+    """
+    Load Suffix Tree from a file
+    :param filename:
+    :return: Suffix Tree
+    """
+    tree = SuffixTree()
+    with open(filename, 'r') as fd:
+        previous_indentation = 0
+        current_node = tree.root
+        for line in fd:
+            line = line[:-1]
+
+            indentation = 0
+            for w in line:
+                if w != ' ':
+                    break
+                indentation += 1
+
+            value, is_word = line[indentation:].split(' ')
+            is_word = True if is_word == '1' else False
+
+            if indentation > previous_indentation:
+                current_node = current_node.children[-1]
+                previous_indentation = indentation
+            elif indentation < previous_indentation:
+                while indentation < previous_indentation:
+                    current_node = current_node.parent
+                    previous_indentation -= 1
+            current_node.children.append(Node(current_node, value, is_word=is_word))
+    return tree
+
 def get_suffix(word1, word2):
     """
     Suffix between two words
@@ -47,9 +79,10 @@ class SuffixTree:
     def __len__(self):
         return len(self.root)
 
-    def write(self, file):
-        for child in self.root.children:
-            child.write(file)
+    def save(self, filename):
+        with open(filename, 'w') as fd:
+            for child in self.root.children:
+                child.write(fd)
 
 class Node:
 
