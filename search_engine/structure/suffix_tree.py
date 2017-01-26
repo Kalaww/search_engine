@@ -1,3 +1,4 @@
+import numpy as np
 
 def from_sorted_dictionnary(dictionnary):
     """
@@ -39,6 +40,9 @@ class SuffixTree:
 
     def __str__(self):
         return ''.join(str(self.root))
+
+    def __len__(self):
+        return len(self.root)
 
 class Node:
 
@@ -87,3 +91,9 @@ class Node:
             children.append(''.join(['\n\t'+l for l in s.split('\n')]))
         s = '{} {}'.format(self.value, '#' if self.is_word else '')
         return s + ''.join(children)
+
+    def __len__(self):
+        l = (1 if self.is_word else 0)
+        if len(self.children) > 0:
+            l += np.sum([len(child) for child in self.children])
+        return l
