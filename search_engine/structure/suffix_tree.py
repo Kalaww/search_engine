@@ -43,6 +43,30 @@ def from_file(filename):
             current_node.children.append(Node(current_node, value, is_word=is_word))
     return tree
 
+def to_list(tree):
+    """
+    Convert a Suffix Tree to a list
+    :param tree: suffix tree
+    :return:
+    """
+    l = []
+    _to_list(tree.root, '', l)
+    return l
+
+def _to_list(node, suffix, list):
+    """
+    Recursive conversion of a suffix tree to a list
+    You should use 'to_list(tree)'
+    :param node:
+    :param suffix:
+    :param list:
+    """
+    suffix = suffix + node.value
+    if node.is_word:
+        list.append(suffix)
+    for child in node.children:
+        _to_list(child, suffix, list)
+
 def get_suffix(word1, word2):
     """
     Suffix between two words
