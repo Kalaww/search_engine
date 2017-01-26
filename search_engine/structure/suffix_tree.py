@@ -39,13 +39,17 @@ class SuffixTree:
         self.root.add(value)
 
     def __str__(self):
-        return ''.join(str(self.root))
+        s = ''
+        for child in self.root.children:
+            s += str(child) + '\n'
+        return s
 
     def __len__(self):
         return len(self.root)
 
     def write(self, file):
-        self.root.write(file)
+        for child in self.root.children:
+            child.write(file)
 
 class Node:
 
@@ -105,6 +109,6 @@ class Node:
         return l
 
     def write(self, file, indentation=''):
-        file.write('{}{} {}'.format(indentation, self.value, '1' if self.is_word else '0'))
+        file.write('{}{} {}\n'.format(indentation, self.value, '1' if self.is_word else '0'))
         for child in self.children:
             child.write(file, indentation+' ')
