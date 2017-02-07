@@ -13,18 +13,23 @@ class Pagerank:
         if not graph.is_loaded:
             log.error('Page Rank: graph was not correctly loaded')
             return
-        if start < 0 or start >= graph.nb_vertices:
-            log.error('Page Rank: start vertex {} out of bound (graph has {} vertices)'.format(start, graph.nb_vertices))
-            return
 
         self.verbose = verbose
         self.graph = graph
-        self.start = start
         self.n_steps = n_steps
         self.zap = zap
         self.epsilon = epsilon
-        self.vector = np.zeros(graph.nb_vertices, np.float32)
-        self.vector[self.start] = 1
+        self.vector = np.zeros(graph.nb_vertices, np.float64)
+
+
+        if start == 'all':
+            self.vector.fill(1.0 / self.graph.nb_vertices)
+        else:
+            start = int(start)
+            if start < 0 or start >= graph.nb_vertices:
+                log.error('Page Rank: start vertex {} out of bound (graph has {} vertices)'.format(start, graph.nb_vertices))
+                return
+            self.vector[self.start] = 1.0
         self.is_init = True
 
     def run(self, print_n_step=False):
@@ -44,7 +49,7 @@ class Pagerank:
                 print('step {}: {}'.format(step, r))
 
             distance = np.sum(np.abs(r - self.vector))
-            self.vector = r.copy()
+            self.vector = r
 
             if distance < self.epsilon or not self.n_steps is None and step >= self.n_steps:
                 break

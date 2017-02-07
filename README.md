@@ -37,6 +37,7 @@ Options:
                         FILE to store the page rank vector [default: stdout]
   -s, --step            print number of step
   -a STARTER, --starter=STARTER
-                        starter vertex for the page rank vector [default: 0]
+                        starter vertex for the page rank vector: index of the
+                        vertex or 'all' for all vertices [default: all]
 ```
 

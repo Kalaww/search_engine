@@ -1,6 +1,6 @@
 import numpy as np
 
-def from_sorted_dictionnary(dictionnary):
+def from_dictionnary(dictionnary):
     """
     Create Suffix Tree from a list of words
     :param dictionnary: list of words

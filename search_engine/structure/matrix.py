@@ -8,7 +8,7 @@ class Matrix:
         self.nb_value = nb_value
         self.size = size
 
-        self.values = np.zeros(self.nb_value, dtype=np.float32)
+        self.values = np.zeros(self.nb_value, dtype=np.float64)
         self.lines = np.zeros(self.size + 1, dtype=np.uint8)
         self.indexes = np.zeros(self.nb_value, dtype=np.uint8)
 
@@ -84,9 +84,9 @@ class Matrix:
         if len(vector) != self.size:
             raise MatrixException('Vector size is not the same as matrix')
 
-        res = np.zeros(self.size, dtype=np.float32)
+        res = np.zeros(self.size, dtype=np.float64)
 
         for row in range(0, self.size):
             for i in range(self.lines[row], self.lines[row+1]):
-                res[self.indexes[i]] += self.values[i] * vector[row]
+                res[self.indexes[i]] = res[self.indexes[i]] + self.values[i] * vector[row]
         return res

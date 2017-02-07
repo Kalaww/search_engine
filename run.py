@@ -15,19 +15,19 @@ pagerank_op.add_option('-v', '--verbose', action='store_true', dest='verbose', d
 pagerank_op.add_option('-e', '--epsilon', action='store', dest='epsilon', type='float', default=0.0001,
                        help='page rank epsilon [default: %default]')
 pagerank_op.add_option('-z', '--zap', action='store', dest='zap', type='float', default=0.0,
-                       help='zap factor [default: 0.0]')
+                       help='zap factor [default: %default]')
 pagerank_op.add_option('-o', '--output', action='store', dest='output',
                        help='FILE to store the page rank vector [default: stdout]', metavar='FILE')
 pagerank_op.add_option('-s', '--step', action='store_true', dest='print_step', default=False,
                        help='print number of step')
-pagerank_op.add_option('-a', '--starter', action='store', type='int', dest='starter', default=0,
-                       help='starter vertex for the page rank vector [default: %default]')
+pagerank_op.add_option('-a', '--starter', action='store', type='string', dest='starter', default='all',
+                       help='starter vertex for the page rank vector: index of the vertex or \'all\' for all vertices [default: %default]')
 
 
 def usage():
     global pagerank_op
 
-    print '== PAGE RANK =='
+    print('== PAGE RANK ==')
     pagerank_op.print_help()
 
 
@@ -63,7 +63,7 @@ def run_pagerank(args):
     p = Pagerank(graph, options.starter, zap=options.zap, epsilon=options.epsilon, verbose=options.verbose)
     result = p.run(options.print_step)
 
-    if not result:
+    if result is None:
         return
 
     if options.output:
