@@ -20,6 +20,46 @@ class Graph:
         self.read_from_file()
 
     def read_from_file(self):
+        if self.filename.endswith('.csv'):
+            self.read_csv()
+        else:
+            self.read_txt()
+
+    def read_csv(self):
+        fd = open(self.filename)
+        max = 0
+        for line in fd.readlines()[1:]:
+            line_split = line[:-1].split(',', 1)
+            if len(line_split) != 2:
+                raise GrapheException('Bad formatting in line {} in file {}'.format(line, self.filename))
+            src = int(line_split[0])
+            if src > max :
+                max = src
+            if len(line_split[1]) != 0:
+                dst = [int(d) for d in line_split[1].split(' ') if len(d) > 0]
+                for d in dst:
+                    if d > max:
+                        max = d
+                self.nb_arcs += len(dst)
+        self.nb_vertices = max + 1
+        log.debug('Graph first read: {} vertices and {} arcs detected'.format(self.nb_vertices, self.nb_arcs))
+
+        fd.seek(0, 0)
+        self.matrix = Matrix(self.nb_arcs, self.nb_vertices)
+
+        for line in fd.readlines()[1:]:
+            line_split = line[:-1].split(',', 1)
+            if len(line_split) != 2:
+                raise GrapheException('Bad formatting in line {} in file {}'.format(line, self.filename))
+            if len(line_split[1]) != 0:
+                src = int(line_split[0])
+                dst = [int(d) for d in line_split[1].split(' ') if len(d) > 0]
+                self.matrix.put_row(src, dst)
+        self.matrix.end()
+        self.is_loaded = True
+        log.info('Graph successfully loaded')
+
+    def read_txt(self):
         fd = open(self.filename)
         max = 0
         for line in fd.readlines():
