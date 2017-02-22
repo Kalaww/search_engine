@@ -1,15 +1,34 @@
-import unidecode
+# coding=utf-8
+
 import itertools
 import sys
 import time
 
-def process_word(word):
+
+def lower_and_no_accent(text):
     """
-    Remove accent and transform to lower case
-    :param word:
+    Remove accents and
+    :param text:
     :return:
     """
-    return unidecode.unidecode(word).lower()
+    chars = {
+        '’': '\'',
+        'ù': 'u', 'û': 'u', 'ü': 'u', 'Ù': 'u', 'Û': 'u', 'Ü': 'u',
+        'ÿ': 'y', 'Ÿ': 'y',
+        'à': 'a', 'â': 'a', 'À': 'a', 'Â': 'a',
+        'ç': 'c', 'Ç': 'c',
+        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'É': 'e', 'È': 'e', 'Ê': 'e', 'Ë': 'e',
+        'ï': 'i', 'î': 'i', 'Ï': 'i', 'Î': 'i',
+        'ô': 'o', 'Ô': 'o',
+        'œ': 'oe', 'æ': 'ae', 'Æ': 'ae', 'Œ': 'oe',
+        '&lt;' : '', '&gt;': '',
+        'l\'': '', 'd\'': '', 'j\'': '', 'n\'': '', 's\'': '', 'c\'': ''
+    }
+
+    text = text.lower()
+    for k,v in chars.items():
+        text = text.replace(k,v)
+    return text
 
 def normalize_text(content):
     """
@@ -18,7 +37,7 @@ def normalize_text(content):
     :return:
     """
     bad_chars = ['"', '.', ',', '{', '}', '=', '*', '[', ']', '|', '@', ':',
-                 '!', '?', '%', '$', '&amp;', '&quot;', '~', '/']
+                 '!', '?', '%', '$', '&amp;', '&quot;', '~', '/', '<', '>', '\'\'']
     for bad in bad_chars:
         content = content.replace(bad, ' ')
     content = ' '.join(content.split())
