@@ -1,7 +1,7 @@
 import re
 import logging as log
 
-from matrix import Matrix
+from search_engine.structure.matrix import Matrix
 from search_engine.exception import GrapheException
 
 class Graph:

@@ -29,7 +29,7 @@ class Pagerank:
             if start < 0 or start >= graph.nb_vertices:
                 log.error('Page Rank: start vertex {} out of bound (graph has {} vertices)'.format(start, graph.nb_vertices))
                 return
-            self.vector[self.start] = 1.0
+            self.vector[start] = 1.0
         self.is_init = True
 
     def run(self, print_n_step=False):
