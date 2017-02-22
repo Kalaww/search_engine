@@ -49,8 +49,8 @@ def count_lines_in_file(filename):
     :param filename:
     :return:
     """
-    f = open(filename, 'r')
-    bufgen = itertools.takewhile(lambda x: x, (f.read(1024*1024) for _ in itertools.repeat(None)))
+    f = open(filename, 'rb')
+    bufgen = itertools.takewhile(lambda x: x, (f.raw.read(1024*1024) for _ in itertools.repeat(None)))
     return sum( buf.count(b'\n') for buf in bufgen if buf )
 
 

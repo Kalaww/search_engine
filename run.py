@@ -34,6 +34,8 @@ collector_op.add_option('-d', '--dictionary', action='store', type='string', des
                         help='FILE words dictionary in csv')
 collector_op.add_option('-i', '--print-interval', action='store', type='int', dest='interval', metavar='VALUE', default=100000,
                         help='print progress each VALUE lines [default: %default]')
+collector_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
+                        help='specify the number of lines in the wiki file, it avoid the programm to look for it')
 
 
 def usage():
@@ -105,12 +107,17 @@ def run_collector(args):
     if not options.dictionary:
         collector_op.error('missing words dictionary filename')
         return
+    if options.lines:
+        lines = options.lines
+    else:
+        lines = None
 
     wiki_dump_collector.run(
         options.wiki,
         options.dir,
         options.dictionary,
-        options.interval
+        options.interval,
+        lines_count=lines
     )
 
 
