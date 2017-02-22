@@ -4,24 +4,24 @@
 Version 1 - Page rank : [HERE](https://github.com/kalaww/search_engine/releases)
 
 ## INSTALLATION
-Require Python 2
+Require Python 3
 
 Install the dependencies
 
 ```
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ## RUN
 Run the program with :
 ```
-$ python run.sh [options]
+$ python run.py [options]
 ```
 
 #### PAGE RANK
 The page rank command line :
 ```
-$ python run.sh pagerank [options]
+$ python run.py pagerank [options]
 ```
 Options :
 ```
