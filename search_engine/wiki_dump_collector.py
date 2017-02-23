@@ -6,6 +6,8 @@ import os
 import pandas
 import re
 import copy
+import threading as th
+import queue as qu
 
 
 def extract_links(page_id, page_content, page_to_id):
@@ -74,6 +76,32 @@ def append_to_words_appearance(words_appearance, page_id, title, words_id, word_
             words_appearance[k] = [(page_id, v)]
 
 
+def process_title(queue, lock, page_id, page_to_id, id_to_page):
+    re_title = '.*<title>(.+)</title>.*'
+
+    while True:
+        item = queue.get()
+        if item is None:
+            break
+        line = str(item)
+        line = util.lower_and_no_accent(line)
+        match = re.match(re_title, line)
+
+        if match and not ':' in match.group(1):
+            current_title = match.group(1)
+            current_title = util.normalize_text(current_title)
+
+            lock.acquire()
+            if current_title in page_to_id:
+                page_to_id[current_title].append(page_id[0])
+            else:
+                page_to_id[current_title] = [page_id[0]]
+            id_to_page[page_id[0]] = current_title
+            page_id[0] = page_id[0] + 1
+            lock.release()
+        queue.task_done()
+
+
 def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=10000, lines_count=None):
     if wiki_dump_filename is None:
         return
@@ -109,9 +137,19 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
     id_to_page = {}  # id => page title
 
     progressBar = util.ProgressBar(WIKI_N_LINES)
-    re_title = '.*<title>(.+)</title>.*'
+
     line_count = 0
-    page_id = 1
+    page_id = [1]
+
+    lock = th.RLock()
+    queue = qu.Queue()
+    n_threads = 3
+    threads = []
+
+    for i in range(n_threads):
+        t = th.Thread(target=process_title, args=(queue, lock, page_id, page_to_id, id_to_page))
+        t.start()
+        threads.append(t)
 
     print('\nSearch for page titles in file')
     with open(wiki_dump_filename, 'r') as fd_wiki_dump:
@@ -119,31 +157,34 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
             line = line[:-1]
             line = line.strip()
             if '<title' in line:
-                line = util.lower_and_no_accent(line)
-                current_title = line
-                match = re.match(re_title, line)
-                if match is None or ':' in match.group(1):
-                    continue
-                current_title = match.group(1)
-                current_title = util.normalize_text(current_title)
-                if current_title in page_to_id:
-                    page_to_id[current_title].append(page_id)
-                else:
-                    page_to_id[current_title] = [page_id]
-                id_to_page[page_id] = current_title
-                page_id += 1
+                queue.put(line)
             if line_count % print_interval == 0:
                 progressBar.print_progress(line_count)
             line_count += 1
 
+    queue.join()
+    for i in range(n_threads):
+        queue.put(None)
+    for t in threads:
+        t.join()
+
     print(' DONE')
     print(util.pretty_number(len(id_to_page)), 'titles found\n')
 
+    print('Sorting id to page array')
+    id_to_page = sorted(id_to_page.items())
+
+    print('Saving id to page array to', ID_TO_PAGE_FILENAME)
+    with open(ID_TO_PAGE_FILENAME, 'w') as fd:
+        fd.write('id@page\n')
+        for page_id, page in id_to_page:
+            fd.write('{}@{}\n'.format(page_id, page))
+
+    return
 
     # sorting ids for each page titles
     for k, v in page_to_id.items():
         page_to_id[k] = sorted(v)
-
 
     in_page = False
     in_text = False
@@ -225,8 +266,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
 
     print('Sorting page to id array')
     page_to_id = sorted(page_to_id.items())
-    print('Sorting id to page array')
-    id_to_page = sorted(id_to_page.items())
+
 
     print('Sorting words frequencies array')
     words_appearance = sorted(words_appearance.items())
@@ -237,14 +277,10 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
         for page, list_id in page_to_id:
             fd.write('{}@{}\n'.format(page, ' '.join([str(k) for k in list_id])))
 
-    print('Saving id to page array to', ID_TO_PAGE_FILENAME)
-    with open(ID_TO_PAGE_FILENAME, 'w') as fd:
-        fd.write('id@page\n')
-        for page_id, page in id_to_page:
-            fd.write('{}@{}\n'.format(page_id, page))
-
     print('Saving words frequencies array to', WORDS_APPEARANCE_FILENAME)
     with open(WORDS_APPEARANCE_FILENAME, 'w') as fd:
         fd.write('word_id,frequencies\n')
         for word_id, freqs in words_appearance:
             fd.write('{},{}\n'.format(word_id, ' '.join([str(a) + ':' + str(b) for a, b in freqs])))
+
+
