@@ -1,7 +1,8 @@
 # SEARCH ENGINE
 
 ## RELEASE
-Version 1 - Page rank : [LINK](https://github.com/kalaww/search_engine/releases)
+- Version 1 - Page rank : [LINK](https://github.com/kalaww/search_engine/releases/tag/1.0)
+- Version 2 - Page rank + Collector : [LINK](https://github.com/kalaww/search_engine/releases/tag/2.0)
 
 ## INSTALLATION
 Require Python 3
@@ -45,6 +46,14 @@ Options:
 The french dictionary used for this collector is in 'data/dictionary.fr.csv' [LINK](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
 
 You can check how I generate this dictionary with this Jupyter Notebook 'generate_dictionary.ipynb' (watchable on GitHub) [LINK](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
+
+The collector creates three files : 
+- 'id_to_page.csv' : relation page id -> page title
+- 'page_links.txt' : relation page id -> links page id
+- 'words_appearance.csv' : relation word id -> list(page id, word frequency)
+
+In words_appearance.csv, each word in the title of the page (and in the dictionary used) add 1.0 to the word frequency.
+It might help for a stronger classification of the pages (if a keyword is in the page title, it might be a highly relevant page)
 
 The collector command line :
 ```
