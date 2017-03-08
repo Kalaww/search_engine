@@ -1,3 +1,6 @@
 .idea/
-data/
 *.pyc
+.ipynb_checkpoints/
+search_engine/__pycache__/
+search_engine/structure/__pycache__/
+search_engine/util/__pycache__/
