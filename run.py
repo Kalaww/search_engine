@@ -35,7 +35,7 @@ collector_op.add_option('-d', '--dictionary', action='store', type='string', des
 collector_op.add_option('-i', '--print-interval', action='store', type='int', dest='interval', metavar='VALUE', default=100000,
                         help='print progress each VALUE lines [default: %default]')
 collector_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
-                        help='specify the number of lines in the wiki file, it avoid the programm to look for it')
+                        help='specify the number of lines in the wiki file, it avoids the programm to look for it')
 
 
 def usage():

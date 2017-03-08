@@ -71,7 +71,7 @@ Options:
   -i VALUE, --print-interval=VALUE
                         print progress each VALUE lines [default: 100000]
   -l LINES, --line-count=LINES
-                        specify the number of lines in the wiki file, it avoid
+                        specify the number of lines in the wiki file, it avoids
                         the programm to look for it
 ```
 
