@@ -23,7 +23,7 @@ The page rank command line :
 ```
 $ python3 run.py pagerank [options]
 ```
-Options :
+###### OPTIONS
 ```
 Options:
   -h, --help            show this help message and exit
@@ -41,7 +41,7 @@ Options:
                         vertex or 'all' for all vertices [default: all]
 ```
 
-### COLLECTOR
+#### COLLECTOR
 The french dictionary used for this collector is in 'data/dictionary.fr.csv' [LINK](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
 
 You can check how I generate this dictionary with this Jupyter Notebook 'generate_dictionary.ipynb' (watchable on GitHub) [LINK](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
@@ -50,7 +50,7 @@ The collector command line :
 ```
 $ python3 run.py collector [options]
 ```
-Options :
+###### OPTIONS
 ```
 Options:
   -h, --help            show this help message and exit
