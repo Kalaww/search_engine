@@ -37,8 +37,6 @@ class Pagerank:
             log.error('Page Rank: not initialize correctly')
             return None
         step = 0
-        if self.verbose:
-            print('step {}: {}'.format(step, self.vector))
         start_time = time.time()
         while True:
             r = self.graph.matrix.multiply_transpose_with(self.vector)
