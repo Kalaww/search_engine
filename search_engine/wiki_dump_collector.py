@@ -166,7 +166,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
     line_count = 0
     progressBar.reset_time()
 
-    print('Collecting text of each page in file')
+    print('\nCollecting text of each page in file')
     with open(wiki_dump_filename, 'r') as fd_wiki_dump:
         for line in fd_wiki_dump:
             line = line[:-1]

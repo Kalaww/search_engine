@@ -45,10 +45,10 @@ class Pagerank:
             for i in range(len(r)):
                 r[i] = self.zap / len(r) + (1.0 - self.zap) * r[i]
             step += 1
-            if self.verbose:
-                print('step {}: {}'.format(step, r))
 
-            distance = np.sum(np.abs(r - self.vector))
+            distance = np.sqrt(np.sum((r - self.vector)**2))
+            if self.verbose:
+                print('[STEP {}] distance = {}'.format(step, distance))
             self.vector = r
 
             if distance < self.epsilon or not self.n_steps is None and step >= self.n_steps:
