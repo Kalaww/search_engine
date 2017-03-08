@@ -1,7 +1,7 @@
 # SEARCH ENGINE
 
 ## RELEASE
-Version 1 - Page rank : [HERE](https://github.com/kalaww/search_engine/releases)
+Version 1 - Page rank : [LINK](https://github.com/kalaww/search_engine/releases)
 
 ## INSTALLATION
 Require Python 3
@@ -41,3 +41,32 @@ Options:
                         vertex or 'all' for all vertices [default: all]
 ```
 
+### COLLECTOR
+The french dictionary used for this collector is in 'data/dictionary.fr.csv' [LINK](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
+
+You can check how I generate this dictionary with this Jupyter Notebook 'generate_dictionary.ipynb' (watchable on GitHub) [LINK](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
+
+The collector command line :
+```
+$ python3 run.py collector [options]
+```
+Options :
+```
+Options:
+  -h, --help            show this help message and exit
+  -w FILE, --wiki=FILE  FILE that contains a wiki dump
+  -o FILE, --output-dir=FILE
+                        FILE output directory where to store collected data
+  -d FILE, --dictionary=FILE
+                        FILE words dictionary in csv
+  -i VALUE, --print-interval=VALUE
+                        print progress each VALUE lines [default: 100000]
+  -l LINES, --line-count=LINES
+                        specify the number of lines in the wiki file, it avoid
+                        the programm to look for it
+```
+
+###### EXAMPLES
+You can test the collector with some partial part of the 'frwiki-20151226-pages-articles.xml'
+- 100 000 first lines (11 MB): [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CNU9Zd2doVm16amc)
+- 1 000 000 first lines (105 MB) : [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CX29XTnpmby11THc)
