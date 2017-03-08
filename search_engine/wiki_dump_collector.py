@@ -233,4 +233,8 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
         fd.write('word_id,frequencies\n')
         for word_id, freqs in words_appearance:
             fd.write('{},{}\n'.format(word_id, ' '.join([str(a) + ':' + str(b) for a, b in freqs])))
-    print('Done')
+
+    print('\n== OUTPUT FILES ==')
+    print('{} : contains id -> page title relation'.format(ID_TO_PAGE_FILENAME))
+    print('{} : contains page id -> links page id'.format(PAGE_LINKS_FILENAME))
+    print('{} : contains word id -> (page id, word frequency)'.format(WORDS_APPEARANCE_FILENAME))
