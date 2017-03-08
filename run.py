@@ -6,7 +6,7 @@ from optparse import OptionParser
 
 from search_engine.pagerank import Pagerank
 from search_engine.structure.graph import Graph
-import search_engine.wiki_dump_collector as wiki_dump_collector
+import search_engine.wiki_collector as wiki_collector
 
 pagerank_op = OptionParser(usage='usage: %prog pagerank [options]')
 pagerank_op.add_option('-g', '--graph', action='store', type='string', dest='graph_filename',
@@ -112,7 +112,7 @@ def run_collector(args):
     else:
         lines = None
 
-    wiki_dump_collector.run(
+    wiki_collector.run(
         options.wiki,
         options.dir,
         options.dictionary,
