@@ -15,13 +15,13 @@ $ pip3 install -r requirements.txt
 ## RUN
 Run the program with :
 ```
-$ python run.py [options]
+$ python3 run.py [options]
 ```
 
 #### PAGE RANK
 The page rank command line :
 ```
-$ python run.py pagerank [options]
+$ python3 run.py pagerank [options]
 ```
 Options :
 ```
