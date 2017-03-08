@@ -72,7 +72,7 @@ class Graph:
                 max = dst
             self.nb_arcs += 1
         self.nb_vertices = max + 1
-        log.debug('Graph first read: {} vertices and {} arcs detected'.format(self.nb_vertices, self.nb_arcs))
+        log.info('Graph first read: {} vertices and {} arcs detected'.format(self.nb_vertices, self.nb_arcs))
 
         fd.seek(0, 0)
         current_src = None
