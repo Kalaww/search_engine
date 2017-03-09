@@ -3,11 +3,12 @@
 import itertools
 import sys
 import time
+import pandas
 
 
 def lower_and_no_accent(text):
     """
-    Remove accents and
+    Remove accents and some special characteres
     :param text:
     :return:
     """
@@ -107,3 +108,30 @@ class ProgressBar:
         sys.stdout.write(s)
         sys.stdout.flush()
         self.last_print = s
+
+def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
+    """
+    Load dictionary
+    :param filename:
+    :param with_word_to_id: need to return word_to_id
+    :param with_id_to_word: need to return id_to_word
+    :return: word_to_id,id_to_word OR word_to_id OR id_to_word
+    """
+    if with_id_to_word and with_word_to_id:
+        return None
+    dataframe = pandas.read_csv(filename)
+    if with_word_to_id:
+        word_to_id = {}
+    if with_id_to_word:
+        id_to_word = {}
+    for i in range(len(dataframe)):
+        if with_word_to_id:
+            word_to_id[dataframe['word'][i]] = dataframe['id'][i]
+        if with_id_to_word:
+            id_to_word[dataframe['id'][i]] = dataframe['word'][i]
+    if with_id_to_word and with_word_to_id:
+        return word_to_id, id_to_word
+    if with_id_to_word:
+        return id_to_word
+    if with_word_to_id:
+        return word_to_id

@@ -7,6 +7,7 @@ from optparse import OptionParser
 from search_engine.pagerank import Pagerank
 from search_engine.structure.graph import Graph
 import search_engine.wiki_collector as wiki_collector
+from search_engine.search import search
 
 pagerank_op = OptionParser(usage='usage: %prog pagerank [options]')
 pagerank_op.add_option('-g', '--graph', action='store', type='string', dest='graph_filename',
@@ -59,6 +60,8 @@ def main():
         run_pagerank(args[1:])
     elif args[0] == 'collector':
         run_collector(args[1:])
+    elif args[0] == 'search':
+        run_search(args[1:])
     else:
         usage()
 
@@ -119,6 +122,9 @@ def run_collector(args):
         options.interval,
         lines_count=lines
     )
+
+def run_search(args):
+    search("algorithme", "data/dictionary.fr.csv", "data/out/words_appearance.csv", "data/out/pagerank.txt", "data/out/id_to_page.csv")
 
 
 if __name__ == '__main__':
