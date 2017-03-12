@@ -37,6 +37,18 @@ collector_op.add_option('-i', '--print-interval', action='store', type='int', de
                         help='print progress each VALUE lines [default: %default]')
 collector_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
                         help='specify the number of lines in the wiki file, it avoids the programm to look for it')
+collector_op.add_option('-p', '--pages-per-word', action='store', type='int', dest='pages_per_word', metavar='NUMBER',
+                        help='NUMBER of pages per word to save [default: %default]', default=10)
+
+search_op = OptionParser(usage='usage: %prog search [options]')
+search_op.add_option('-d', '--dictionary', action='store', type='string', dest='dictionary', metavar='FILE',
+                        help='FILE words dictionary in csv')
+search_op.add_option('-w', '--words-appearance', action='store', type='string', dest='words_appearance', metavar='FILE',
+                        help='FILE words appearance in page filename')
+search_op.add_option('-p', '--pagescore', action='store', type='string', dest='pagescore', metavar='FILE',
+                        help='FILE pagescore filename')
+search_op.add_option('-i', '--id-to-page', action='store', type='string', dest='id_to_page', metavar='FILE',
+                        help='FILE id-to-page filename')
 
 
 def usage():
@@ -120,11 +132,35 @@ def run_collector(args):
         options.dir,
         options.dictionary,
         options.interval,
-        lines_count=lines
+        options.pages_per_word,
+        lines_count=lines,
     )
 
 def run_search(args):
-    search("algorithme", "data/dictionary.fr.csv", "data/out/words_appearance.csv", "data/out/pagerank.txt", "data/out/id_to_page.csv")
+    global search_op;
+
+    (options, args_left) = search_op.parse_args(args=args)
+
+    if not options.dictionary:
+        search_op.error('missing words dictionary filename')
+        return
+    if not options.words_appearance:
+        search_op.error('missing words appearance filename')
+        return
+    if not options.pagescore:
+        search_op.error('missing pagescore filename')
+        return
+    if not options.id_to_page:
+        search_op.error('missing id-to-page filename')
+        return
+
+    search(
+        '',
+        options.dictionary,
+        options.words_appearance,
+        options.pagescore,
+        options.id_to_page
+    )
 
 
 if __name__ == '__main__':

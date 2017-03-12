@@ -41,7 +41,7 @@ def extract_words_id(text, word_to_id):
     return [word_to_id[w] for w in text.split(' ') if w in word_to_id]
 
 
-def append_to_words_appearance(words_appearance, page_id, title, words_id, word_to_id):
+def append_to_words_appearance(words_appearance, page_id, title, words_id, word_to_id, pages_per_word):
     """
     Append words frequences to the words_appearance map
     The frequency of a word in the words_id is between 0 and 1
@@ -51,6 +51,7 @@ def append_to_words_appearance(words_appearance, page_id, title, words_id, word_
     :param title:
     :param words_id:
     :param word_to_id:
+    :param pages_per_word:
     :return:
     """
     title_words_id = set(word_to_id[w] for w in title.split(' ') if w in word_to_id)
@@ -68,12 +69,18 @@ def append_to_words_appearance(words_appearance, page_id, title, words_id, word_
             occ[word_id] = 1.0
     for k, v in occ.items():
         if k in words_appearance:
-            words_appearance[k].append((page_id, v))
+            if len(words_appearance[k]) == pages_per_word and words_appearance[k][-1][1] < v:
+                words_appearance[k][-1] = (page_id, v)
+            elif len(words_appearance[k]) < pages_per_word:
+                if words_appearance[k][-1][1] < v:
+                    words_appearance[k].insert(0, (page_id, v))
+                else:
+                    words_appearance[k].append((page_id, v))
         else:
             words_appearance[k] = [(page_id, v)]
 
 
-def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=10000, lines_count=None):
+def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=10000, pages_per_word=10, lines_count=None):
     if wiki_dump_filename is None:
         return
     if output_dir is None:
@@ -195,7 +202,8 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
                                     page_id,
                                     page_title,
                                     words_id,
-                                    word_to_id
+                                    word_to_id,
+                                    pages_per_word
                                 )
                         page_id += 1
                         words = None
@@ -223,18 +231,15 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
 
     fd_links.close()
     print('  DONE\n')
-    print(PAGE_LINKS_FILENAME, 'contain page links')
 
-    print('Sorting words frequencies array')
-    words_appearance = sorted(words_appearance.items())
-
-    print('Saving words frequencies array to', WORDS_APPEARANCE_FILENAME)
+    print('Saving words appearance to', WORDS_APPEARANCE_FILENAME)
     with open(WORDS_APPEARANCE_FILENAME, 'w') as fd:
-        fd.write('word_id,frequencies\n')
-        for word_id, freqs in words_appearance:
-            fd.write('{},{}\n'.format(word_id, ' '.join([str(a) + ':' + str(b) for a, b in freqs])))
+        fd.write('word_id,page_ids\n')
+        for word_id, page_ids in words_appearance.items():
+            pages,freq = zip(*page_ids)
+            fd.write('{},{}\n'.format(word_id, ' '.join([str(a) for a in sorted(pages)])))
 
     print('\n== OUTPUT FILES ==')
     print('{} : contains id -> page title relation'.format(ID_TO_PAGE_FILENAME))
     print('{} : contains page id -> links page id'.format(PAGE_LINKS_FILENAME))
-    print('{} : contains word id -> (page id, word frequency)'.format(WORDS_APPEARANCE_FILENAME))
+    print('{} : contains word id -> list(page id)'.format(WORDS_APPEARANCE_FILENAME))
