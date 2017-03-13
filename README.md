@@ -43,22 +43,23 @@ $ python3 run.py pagerank [options]
 ```
 
 #### COLLECTOR
-The french dictionary used for this collector is in 'data/dictionary.fr.csv' 
+The french dictionary used for this collector is in `data/dictionary.fr.csv` 
 [LINK](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
 
-You can check how I generate this dictionary with this Jupyter Notebook 'generate_dictionary.ipynb' (watchable on GitHub) 
+You can check how I generate this dictionary with this Jupyter Notebook `generate_dictionary.ipynb` (watchable on GitHub) 
 [LINK](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
 
 The collector creates three files : 
-- 'id_to_page.csv' : relation page id -> page title
-- 'page_links.txt' : relation page id -> links page id
-- 'words_appearance.csv' : relation word id -> list(page id)
+- `id_to_page.csv` : relation page id -> page title
+- `page_links.txt` : relation page id -> links page id
+- `words_appearance.csv` : relation word id -> list(page id)
 
 For space efficiency, `words_appearance.csv` store the N page's id for each word with the highest frequency (N is 10 by 
-default, but it can be change with option `-p N`)
+default, but it can be change with option `-p N`).
 
-In words_appearance.csv, each word in the title of the page (and in the dictionary used) add 1.0 to the word frequency.
-It might help for a stronger classification of the pages (if a keyword is in the page title, it might be a highly relevant page)
+Each words in the page's title add 1.0 to the word's frequency in this page. Therefore, this page will be more relevant for
+the corresponding word.
+
 
 ###### COMMAND LINE
 ```
