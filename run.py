@@ -142,8 +142,9 @@ def run_collector(args):
         lines_count=lines,
     )
 
+
 def run_search(args):
-    global search_op;
+    global search_op
 
     (options, args_left) = search_op.parse_args(args=args)
 
