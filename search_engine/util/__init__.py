@@ -31,6 +31,7 @@ def lower_and_no_accent(text):
         text = text.replace(k,v)
     return text
 
+
 def normalize_text(content):
     """
     Remove unused charactere and multiple spaces form a text
@@ -43,6 +44,7 @@ def normalize_text(content):
         content = content.replace(bad, ' ')
     content = ' '.join(content.split())
     return content.strip()
+
 
 def count_lines_in_file(filename):
     """
@@ -109,9 +111,10 @@ class ProgressBar:
         sys.stdout.flush()
         self.last_print = s
 
+
 def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
     """
-    Load dictionary
+    Load dictionary (CSV format with ',' separator)
     :param filename:
     :param with_word_to_id: need to return word_to_id
     :param with_id_to_word: need to return id_to_word
@@ -135,3 +138,66 @@ def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
         return id_to_word
     if with_word_to_id:
         return word_to_id
+
+
+def load_words_appearance(filename):
+    """
+    Load words appearance file (CSV format with ',' separator)
+    :param filename:
+    :return:
+    """
+    fd = open(filename, 'r')
+    first_line = True
+    data = {}
+    for line in fd.readlines():
+        if first_line:
+            first_line = False
+            continue
+        word_id, pages = line[:-1].split(',')
+        data[int(word_id)] = [int(a) for a in pages.split()]
+    fd.close()
+    return data
+
+
+def save_words_appearance(filename, data):
+    """
+    Save words appearance data in CSV file format
+    :param filename:
+    :param data:
+    :return:
+    """
+    with open(filename, 'w') as fd:
+        fd.write('word_id,page_ids\n')
+        for word_id, page_ids in data.items():
+            freq,pages = zip(*page_ids)
+            fd.write('{},{}\n'.format(word_id, ' '.join([str(a) for a in sorted(pages)])))
+
+
+def load_page_score(filename):
+    """
+    Load page score file and return page's id sorted by inversed page score values
+    :param filename:
+    :return:
+    """
+    fd = open(filename, 'r')
+    data = []
+    i = 0
+    for line in fd.readlines():
+        data.append((float(line[:-1]), i))
+        i += 1
+    fd.close()
+    page_score = [page for score,page in reversed(sorted(data))]
+    return page_score
+
+
+def save_id_to_page(filename, data):
+    """
+    Save id_to_page into CSV format with '@' separator
+    :param filename:
+    :param data:
+    :return:
+    """
+    with open(filename, 'w') as fd:
+        fd.write('id@page\n')
+        for page_id, page in data:
+            fd.write('{}@{}\n'.format(page_id, page))

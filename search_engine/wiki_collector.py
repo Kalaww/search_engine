@@ -3,7 +3,6 @@
 from __future__ import print_function, division
 import search_engine.util as util
 import os
-import pandas
 import re
 
 
@@ -97,12 +96,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
 
 
     print('\nLoading dictionnary of words ...')
-    dataframe = pandas.read_csv(dictionary_filename)
-    word_to_id = {}
-    id_to_word = {}
-    for i in range(len(dataframe)):
-        word_to_id[dataframe['word'][i]] = dataframe['id'][i]
-        id_to_word[dataframe['id'][i]] = dataframe['word'][i]
+    word_to_id, id_to_word = util.load_dictionary(dictionary_filename, with_word_to_id=True, with_id_to_word=True)
     print('Dictionnary loaded')
 
 
@@ -147,10 +141,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
     id_to_page = sorted(id_to_page.items())
 
     print('Saving id to page array to', ID_TO_PAGE_FILENAME)
-    with open(ID_TO_PAGE_FILENAME, 'w') as fd:
-        fd.write('id@page\n')
-        for page_id, page in id_to_page:
-            fd.write('{}@{}\n'.format(page_id, page))
+    util.save_id_to_page(ID_TO_PAGE_FILENAME, id_to_page)
 
 
     in_page = False
@@ -235,11 +226,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
     print('  DONE\n')
 
     print('Saving words appearance to', WORDS_APPEARANCE_FILENAME)
-    with open(WORDS_APPEARANCE_FILENAME, 'w') as fd:
-        fd.write('word_id,page_ids\n')
-        for word_id, page_ids in words_appearance.items():
-            freq,pages = zip(*page_ids)
-            fd.write('{},{}\n'.format(word_id, ' '.join([str(a) for a in sorted(pages)])))
+    util.save_words_appearance(WORDS_APPEARANCE_FILENAME, words_appearance)
 
     print('\n== OUTPUT FILES ==')
     print('{} : contains id -> page title relation'.format(ID_TO_PAGE_FILENAME))

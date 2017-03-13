@@ -1,6 +1,5 @@
-import pandas
-
 import search_engine.util as util
+
 
 def preprocess_request(request, word_to_id):
     """
@@ -13,36 +12,6 @@ def preprocess_request(request, word_to_id):
     words_id = [word_to_id[w] for w in request.split() if w in word_to_id]
     return sorted(set(words_id)), '-'.join(request.split())
 
-def load_words_appearance(filename):
-    fd = open(filename, 'r')
-    first_line = True
-    data = {}
-    for line in fd.readlines():
-        if first_line:
-            first_line = False
-            continue
-        word_id, pages = line[:-1].split(',')
-        data[int(word_id)] = [int(a) for a in pages.split()]
-    fd.close()
-    return data
-
-def load_page_score(filename):
-    fd = open(filename, 'r')
-    data = []
-    i = 0
-    for line in fd.readlines():
-        data.append((float(line[:-1]), i))
-        i += 1
-    fd.close()
-    page_score = [page for score,page in reversed(sorted(data))]
-    return page_score
-
-def load_id_to_page(filename):
-    dataframe = pandas.read_csv(filename, sep='@')
-    id_to_page = {}
-    for i in range(len(dataframe)):
-        id_to_page[dataframe['id'][i]] = dataframe['page'][i]
-    return id_to_page
 
 def get_results(request, page_score, words_appearance):
     request_pages = []
@@ -51,6 +20,7 @@ def get_results(request, page_score, words_appearance):
     request_pages = set.intersection(*request_pages)
     result_pages = [page_id for page_id in page_score if page_id in request_pages]
     return [(i, p) for i,p in enumerate(result_pages)]
+
 
 def get_page_title(results_pages, id_to_page_filename):
     out = []
@@ -75,10 +45,12 @@ def get_page_title(results_pages, id_to_page_filename):
     tmp, ret = zip(*sorted(out))
     return ret
 
+
 def search(dictionary_filename, words_appearance_filename, page_score_filename, id_to_page_filename, verbose=False):
     if verbose:
         print('Loading dictionary')
     word_to_id = util.load_dictionary(dictionary_filename, with_word_to_id=True)
+
     print('SEARCH')
     request = input('-> ')
     request_id, result_filename = preprocess_request(request, word_to_id)
@@ -88,12 +60,13 @@ def search(dictionary_filename, words_appearance_filename, page_score_filename, 
 
     if verbose:
         print('Loading words appearance ...')
-    words_appearance = load_words_appearance(words_appearance_filename)
+    words_appearance = util.load_words_appearance(words_appearance_filename)
+
     if verbose:
         print('Loading page score ...')
-    page_score = load_page_score(page_score_filename)
-    results_pages = get_results(request_id, page_score, words_appearance)
+    page_score = util.load_page_score(page_score_filename)
 
+    results_pages = get_results(request_id, page_score, words_appearance)
     titles = get_page_title(results_pages, id_to_page_filename)
 
     result_filename += '.txt'
