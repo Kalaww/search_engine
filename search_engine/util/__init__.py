@@ -120,7 +120,7 @@ def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
     :param with_id_to_word: need to return id_to_word
     :return: word_to_id,id_to_word OR word_to_id OR id_to_word
     """
-    if with_id_to_word and with_word_to_id:
+    if not with_id_to_word and not with_word_to_id:
         return None
     dataframe = pandas.read_csv(filename)
     if with_word_to_id:
