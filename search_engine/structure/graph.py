@@ -3,6 +3,7 @@ import logging as log
 
 from search_engine.structure.matrix import Matrix
 from search_engine.exception import GrapheException
+from search_engine.util import pretty_number
 
 class Graph:
 
@@ -72,7 +73,9 @@ class Graph:
                 max = dst
             self.nb_arcs += 1
         self.nb_vertices = max + 1
-        log.info('Graph first read: {} vertices and {} arcs detected'.format(self.nb_vertices, self.nb_arcs))
+        log.info('Graph first read: {} vertices and {} arcs detected'.format(
+            pretty_number(self.nb_vertices),
+            pretty_number(self.nb_arcs)))
 
         fd.seek(0, 0)
         current_src = None
