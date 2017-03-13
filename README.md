@@ -7,7 +7,7 @@
 ## INSTALLATION
 Require Python 3
 
-Install the dependencies
+To install the dependencies, type :
 
 ```
 $ pip3 install -r requirements.txt
@@ -20,13 +20,13 @@ $ python3 run.py [options]
 ```
 
 #### PAGE RANK
-The page rank command line :
+
+###### COMMAND LINE
 ```
 $ python3 run.py pagerank [options]
 ```
 ###### OPTIONS
 ```
-Options:
   -h, --help            show this help message and exit
   -g FILE, --graph=FILE
                         FILE that contains a graph
@@ -55,13 +55,12 @@ The collector creates three files :
 In words_appearance.csv, each word in the title of the page (and in the dictionary used) add 1.0 to the word frequency.
 It might help for a stronger classification of the pages (if a keyword is in the page title, it might be a highly relevant page)
 
-The collector command line :
+###### COMMAND LINE
 ```
 $ python3 run.py collector [options]
 ```
 ###### OPTIONS
 ```
-Options:
   -h, --help            show this help message and exit
   -w FILE, --wiki=FILE  FILE that contains a wiki dump
   -o FILE, --output-dir=FILE
@@ -73,9 +72,32 @@ Options:
   -l LINES, --line-count=LINES
                         specify the number of lines in the wiki file, it avoids
                         the programm to look for it
+  -p NUMBER, --pages-per-word=NUMBER
+                        NUMBER of pages per word to save [default: 10]
 ```
 
 ###### EXAMPLES
 You can test the collector with some partial part of the 'frwiki-20151226-pages-articles.xml'
 - 100 000 first lines (11 MB): [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CNU9Zd2doVm16amc)
 - 1 000 000 first lines (105 MB) : [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CX29XTnpmby11THc)
+
+#### SEARCH
+
+###### COMMAND LINE
+```
+$ python3 run.py search [options]
+```
+
+###### OPTIONS
+```
+  -h, --help            show this help message and exit
+  -d FILE, --dictionary=FILE
+                        FILE words dictionary in csv
+  -w FILE, --words-appearance=FILE
+                        FILE words appearance in page filename
+  -p FILE, --pagescore=FILE
+                        FILE pagescore filename
+  -i FILE, --id-to-page=FILE
+                        FILE id-to-page filename
+  -v, --verbose         verbose mode
+```
