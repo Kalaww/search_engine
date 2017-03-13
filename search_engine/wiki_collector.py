@@ -54,7 +54,7 @@ def append_to_words_appearance(words_appearance, page_id, title, words_id, word_
     :param pages_per_word:
     :return:
     """
-    title_words_id = set(word_to_id[w] for w in title.split(' ') if w in word_to_id)
+    title_words_id = set([word_to_id[w] for w in title.split(' ') if w in word_to_id])
     freq_unique = 1.0 / float(len(words_id))
     occ = dict()
     for word_id in words_id:
@@ -69,15 +69,11 @@ def append_to_words_appearance(words_appearance, page_id, title, words_id, word_
             occ[word_id] = 1.0
     for k, v in occ.items():
         if k in words_appearance:
-            if len(words_appearance[k]) == pages_per_word and words_appearance[k][-1][1] < v:
-                words_appearance[k][-1] = (page_id, v)
-            elif len(words_appearance[k]) < pages_per_word:
-                if words_appearance[k][-1][1] < v:
-                    words_appearance[k].insert(0, (page_id, v))
-                else:
-                    words_appearance[k].append((page_id, v))
+            words_appearance[k].append((v, page_id))
+            if len(words_appearance[k]) > pages_per_word:
+                words_appearance[k] = (sorted(words_appearance[k]))[1:]
         else:
-            words_appearance[k] = [(page_id, v)]
+            words_appearance[k] = [(v, page_id)]
 
 
 def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=10000, pages_per_word=10, lines_count=None):
@@ -165,6 +161,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
 
     re_text_start = '^.*<text.*>(.+)$'
     re_text_end = '^(.*)</text>'
+    re_text_start_end = '^.*<text.*>(.+)</text'
 
     words_appearance = dict()
 
@@ -216,6 +213,11 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
                             continue
                         page_title = match.group(1)
                         page_title = util.normalize_text(page_title)
+                    elif '<text' in line and '</text' in line:
+                        match = re.match(re_text_start_end, line)
+                        if match is None:
+                            continue
+                        words = match.group(1)
                     elif '<text' in line:
                         match = re.match(re_text_start, line)
                         if match is None:
@@ -236,7 +238,7 @@ def run(wiki_dump_filename, output_dir, dictionary_filename, print_interval=1000
     with open(WORDS_APPEARANCE_FILENAME, 'w') as fd:
         fd.write('word_id,page_ids\n')
         for word_id, page_ids in words_appearance.items():
-            pages,freq = zip(*page_ids)
+            freq,pages = zip(*page_ids)
             fd.write('{},{}\n'.format(word_id, ' '.join([str(a) for a in sorted(pages)])))
 
     print('\n== OUTPUT FILES ==')

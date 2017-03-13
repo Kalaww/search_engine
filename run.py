@@ -52,13 +52,17 @@ search_op.add_option('-i', '--id-to-page', action='store', type='string', dest='
 
 
 def usage():
-    global pagerank_op, collector_op
+    global pagerank_op, collector_op, search_op
 
     print('== PAGE RANK ==')
     pagerank_op.print_help()
 
     print('\n== COLLECTOR ==')
     collector_op.print_help()
+
+    print('\n== SEARCH ==')
+    search_op.print_help()
+
 
 def main():
     global pagerank_op
@@ -155,7 +159,7 @@ def run_search(args):
         return
 
     search(
-        '',
+        'algorithme',
         options.dictionary,
         options.words_appearance,
         options.pagescore,
