@@ -11,7 +11,7 @@ def preprocess_request(request, word_to_id):
     """
     request = util.lower_and_no_accent(request)
     words_id = [word_to_id[w] for w in request.split() if w in word_to_id]
-    return sorted(set(words_id))
+    return sorted(set(words_id)), '-'.join(request.split())
 
 def load_words_appearance(filename):
     fd = open(filename, 'r')
@@ -47,33 +47,64 @@ def load_id_to_page(filename):
 def get_results(request, page_score, words_appearance):
     request_pages = []
     for word_id in request:
-        print('Word id:{} pages:{}'.format(word_id, ','.join([str(i) for i in words_appearance[word_id]])))
         request_pages.append(set(words_appearance[word_id]))
     request_pages = set.intersection(*request_pages)
-    print('Intersection {}'.format(request_pages))
     result_pages = [page_id for page_id in page_score if page_id in request_pages]
-    return result_pages
+    return [(i, p) for i,p in enumerate(result_pages)]
 
-def search(request, dictionary_filename, words_appearance_filename, page_score_filename, id_to_page_filename):
-    print('Loading dictionary')
+def get_page_title(results_pages, id_to_page_filename):
+    out = []
+    done = len(results_pages)
+    fd = open(id_to_page_filename, 'r')
+    first_line = True
+    for line in fd.readlines():
+        if first_line:
+            first_line = False
+            continue
+        id, page = line[:-1].split('@')
+        id = int(id)
+        for pos, page_id in results_pages:
+            if page_id == id:
+                out.append((pos, page))
+                results_pages.remove((pos, page_id))
+                done -= 1
+                if done <= 0:
+                    break
+                continue
+    fd.close()
+    tmp, ret = zip(*sorted(out))
+    return ret
+
+def search(dictionary_filename, words_appearance_filename, page_score_filename, id_to_page_filename, verbose=False):
+    if verbose:
+        print('Loading dictionary')
     word_to_id = util.load_dictionary(dictionary_filename, with_word_to_id=True)
-    print('What to search ?')
+    print('SEARCH')
     request = input('-> ')
-    # dont_exist = [w for w in request.split() if not w in word_to_id]
-    # if len(dont_exist) > 0 :
-    #
-    request_id = preprocess_request(request, word_to_id)
+    request_id, result_filename = preprocess_request(request, word_to_id)
+    if len(request_id) == 0:
+        print('No result found')
+        return
 
-    print('Loading words appearance ...')
+    if verbose:
+        print('Loading words appearance ...')
     words_appearance = load_words_appearance(words_appearance_filename)
-    print('Loading page score ...')
+    if verbose:
+        print('Loading page score ...')
     page_score = load_page_score(page_score_filename)
     results_pages = get_results(request_id, page_score, words_appearance)
 
-    print('Loading id_to_page ...')
-    id_to_page = load_id_to_page(id_to_page_filename)
-    fd = open('result.txt', 'w')
-    for page_id in results_pages:
-        fd.write(id_to_page[page_id]+'\n')
+    titles = get_page_title(results_pages, id_to_page_filename)
+
+    result_filename += '.txt'
+    fd = open(result_filename, 'w')
+    i = 1
+    print('\nRESULTS')
+    for title in titles:
+        l = '{}: {}'.format(i, title)
+        print(l)
+        fd.write(l+'\n')
+        i += 1
     fd.close()
+    print("\nResults saved in '{}'".format(result_filename))
 

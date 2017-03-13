@@ -49,6 +49,8 @@ search_op.add_option('-p', '--pagescore', action='store', type='string', dest='p
                         help='FILE pagescore filename')
 search_op.add_option('-i', '--id-to-page', action='store', type='string', dest='id_to_page', metavar='FILE',
                         help='FILE id-to-page filename')
+search_op.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False,
+                       help='verbose mode')
 
 
 def usage():
@@ -159,11 +161,11 @@ def run_search(args):
         return
 
     search(
-        'algorithme',
         options.dictionary,
         options.words_appearance,
         options.pagescore,
-        options.id_to_page
+        options.id_to_page,
+        verbose=options.verbose
     )
 
 
