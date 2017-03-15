@@ -46,7 +46,7 @@ def get_page_title(results_pages, id_to_page_filename):
     return ret
 
 
-def search(dictionary_filename, words_appearance_filename, page_score_filename, id_to_page_filename, verbose=False):
+def search(dictionary_filename, words_appearance_filename, page_score_filename, pageID_to_title_filename, verbose=False):
     if verbose:
         print('Loading dictionary')
     word_to_id = util.load_dictionary(dictionary_filename, with_word_to_id=True)
@@ -67,7 +67,7 @@ def search(dictionary_filename, words_appearance_filename, page_score_filename, 
     page_score = util.load_page_score(page_score_filename)
 
     results_pages = get_results(request_id, page_score, words_appearance)
-    titles = get_page_title(results_pages, id_to_page_filename)
+    titles = get_page_title(results_pages, pageID_to_title_filename)
 
     result_filename += '.txt'
     fd = open(result_filename, 'w')

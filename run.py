@@ -47,8 +47,8 @@ search_op.add_option('-w', '--words-appearance', action='store', type='string', 
                         help='FILE words appearance in page filename')
 search_op.add_option('-p', '--pagescore', action='store', type='string', dest='pagescore', metavar='FILE',
                         help='FILE pagescore filename')
-search_op.add_option('-i', '--id-to-page', action='store', type='string', dest='id_to_page', metavar='FILE',
-                        help='FILE id-to-page filename')
+search_op.add_option('-i', '--pageID-to-title', action='store', type='string', dest='pageID_to_title', metavar='FILE',
+                        help='FILE pageID_to_title filename')
 search_op.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False,
                        help='verbose mode')
 
@@ -157,15 +157,15 @@ def run_search(args):
     if not options.pagescore:
         search_op.error('missing pagescore filename')
         return
-    if not options.id_to_page:
-        search_op.error('missing id-to-page filename')
+    if not options.pageID_to_title:
+        search_op.error('missing pageID_to_title filename')
         return
 
     search(
         options.dictionary,
         options.words_appearance,
         options.pagescore,
-        options.id_to_page,
+        options.pageID_to_title,
         verbose=options.verbose
     )
 

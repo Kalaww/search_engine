@@ -129,9 +129,9 @@ def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
         id_to_word = {}
     for i in range(len(dataframe)):
         if with_word_to_id:
-            word_to_id[dataframe['word'][i]] = dataframe['id'][i]
+            word_to_id[dataframe['word'][i]] = int(dataframe['id'][i])
         if with_id_to_word:
-            id_to_word[dataframe['id'][i]] = dataframe['word'][i]
+            id_to_word[int(dataframe['id'][i])] = dataframe['word'][i]
     if with_id_to_word and with_word_to_id:
         return word_to_id, id_to_word
     if with_id_to_word:
@@ -190,7 +190,7 @@ def load_page_score(filename):
     return page_score
 
 
-def save_id_to_page(filename, data):
+def save_pageID_to_title(filename, data):
     """
     Save id_to_page into CSV format with '@' separator
     :param filename:
@@ -199,5 +199,5 @@ def save_id_to_page(filename, data):
     """
     with open(filename, 'w') as fd:
         fd.write('id@page\n')
-        for page_id, page in data:
-            fd.write('{}@{}\n'.format(page_id, page))
+        for pageID, title in data:
+            fd.write('{}@{}\n'.format(pageID, title))
