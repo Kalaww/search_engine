@@ -83,7 +83,7 @@ def fetch_titles(wiki_filename, progressBar, print_interval):
     re_id = '.*<id>(\d+)</id>.*'
 
     line_count = 0
-    my_id = 1
+    my_id = 0
 
     title = None
     title_raw = None
@@ -131,7 +131,7 @@ def fetch_pages(wiki_filename, page_links_filename, pageID_to_title, title_to_pa
     pageID = None
 
     re_id = '.*<id>(\d+)</id>.*'
-    re_text_start = '^.*<text.*>(.+)$'
+    re_text_start = '^.*<text.*>(.*)$'
     re_text_end = '^(.*)</text>'
     re_text_start_end = '^.*<text.*>(.+)</text'
 
@@ -160,7 +160,7 @@ def fetch_pages(wiki_filename, page_links_filename, pageID_to_title, title_to_pa
                 else:
                     if '</page' in line:
                         if words and not pageID is None and pageID > -1:
-                            myID, title = pageID_to_title[pageID]
+                            myID, title, title_raw = pageID_to_title[pageID]
                             links = extract_links(myID, words, title_to_pageID)
                             for link in links:
                                 fd_links.write('{}\t{}\n'.format(myID, link))
