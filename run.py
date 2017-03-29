@@ -9,6 +9,8 @@ from search_engine.structure.graph import Graph
 import search_engine.wiki_collector as wiki_collector
 from search_engine.search import search
 
+DEFAULT_DICTIONARY = 'data/dictionary.fr.csv'
+
 pagerank_op = OptionParser(usage='usage: %prog pagerank [options]')
 pagerank_op.add_option('-g', '--graph', action='store', type='string', dest='graph_filename',
                        help='FILE that contains a graph', metavar='FILE')
@@ -32,7 +34,7 @@ collector_op.add_option('-w', '--wiki', action='store', type='string', dest='wik
 collector_op.add_option('-o', '--output-dir', action='store', type='string', dest='dir', metavar='FILE',
                         help='FILE output directory where to store collected data')
 collector_op.add_option('-d', '--dictionary', action='store', type='string', dest='dictionary', metavar='FILE',
-                        help='FILE words dictionary in csv')
+                        help='FILE words dictionary in csv [default: %default]', default=DEFAULT_DICTIONARY)
 collector_op.add_option('-i', '--print-interval', action='store', type='int', dest='interval', metavar='VALUE', default=100000,
                         help='print progress each VALUE lines [default: %default]')
 collector_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
@@ -42,7 +44,7 @@ collector_op.add_option('-p', '--pages-per-word', action='store', type='int', de
 
 search_op = OptionParser(usage='usage: %prog search [options]')
 search_op.add_option('-d', '--dictionary', action='store', type='string', dest='dictionary', metavar='FILE',
-                        help='FILE words dictionary in csv')
+                        help='FILE words dictionary in csv [default: %default]', default=DEFAULT_DICTIONARY)
 search_op.add_option('-w', '--words-appearance', action='store', type='string', dest='words_appearance', metavar='FILE',
                         help='FILE words appearance in page filename')
 search_op.add_option('-p', '--pagescore', action='store', type='string', dest='pagescore', metavar='FILE',
