@@ -54,16 +54,11 @@ search_op.add_option('-v', '--verbose', action='store_true', dest='verbose', def
 
 
 def usage():
-    global pagerank_op, collector_op, search_op
-
-    print('== PAGE RANK ==')
-    pagerank_op.print_help()
-
-    print('\n== COLLECTOR ==')
-    collector_op.print_help()
-
-    print('\n== SEARCH ==')
-    search_op.print_help()
+    print('Commands available:')
+    print('\tpagerank\texecute pagerank')
+    print('\tcollector\texecute collector')
+    print('\tsearch\t\texecute search')
+    print('\tprepare\t\texecute collector > pagerank')
 
 
 def main():
@@ -95,7 +90,8 @@ def run_pagerank(args):
         log.basicConfig(level=log.INFO)
 
     if not options.graph_filename:
-        pagerank_op.error('need to specify a graph file')
+        print('Error: need to specify a graph file')
+        pagerank_op.print_help()
         return
 
     graph = Graph(options.graph_filename)
@@ -107,11 +103,11 @@ def run_pagerank(args):
 
     if options.output:
         with open(options.output, 'w') as fd:
-            for i in result:
-                fd.write('{}\n'.format(i))
+            for id, score in enumerate(result):
+                fd.write('{} {}\n'.format(id, score))
     else:
-        for i in result:
-            print('{}'.format(i))
+        for id, score in enumerate(result):
+            print('{} {}'.format(id, score))
 
 
 def run_collector(args):
@@ -120,13 +116,16 @@ def run_collector(args):
     (options, args_left) = collector_op.parse_args(args=args)
 
     if not options.wiki:
-        collector_op.error('missing wiki dump filename')
+        print('Error: missing wiki dump filename')
+        collector_op.print_help()
         return
     if not options.dir:
-        collector_op.error('missing ouput directory')
+        print('Error: missing ouput directory')
+        collector_op.print_help()
         return
     if not options.dictionary:
-        collector_op.error('missing words dictionary filename')
+        print('Error: missing words dictionary filename')
+        collector_op.print_help()
         return
     if options.lines:
         lines = options.lines
@@ -149,16 +148,20 @@ def run_search(args):
     (options, args_left) = search_op.parse_args(args=args)
 
     if not options.dictionary:
-        search_op.error('missing words dictionary filename')
+        print('Error: missing words dictionary filename')
+        search_op.print_help()
         return
     if not options.words_appearance:
-        search_op.error('missing words appearance filename')
+        print('Error: missing words appearance filename')
+        search_op.print_help()
         return
     if not options.pagescore:
-        search_op.error('missing pagescore filename')
+        print('Error: missing pagescore filename')
+        search_op.print_help()
         return
     if not options.pageID_to_title:
-        search_op.error('missing pageID_to_title filename')
+        print('Error: missing pageID_to_title filename')
+        search_op.print_help()
         return
 
     search(

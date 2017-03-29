@@ -181,10 +181,9 @@ def load_page_score(filename):
     """
     fd = open(filename, 'r')
     data = []
-    i = 0
     for line in fd.readlines():
-        data.append((float(line[:-1]), i))
-        i += 1
+        id, score = line[:-1].split(' ')
+        data.append((float(score), id))
     fd.close()
     page_score = [page for score,page in reversed(sorted(data))]
     return page_score
