@@ -257,3 +257,5 @@ def run(wiki_filename, output_dir, dictionary_filename, print_interval=10000, pa
     print('{} : contains id -> page title relation'.format(PAGEID_TO_TITLE_FILENAME))
     print('{} : contains page id -> links page id'.format(PAGE_LINKS_FILENAME))
     print('{} : contains word id -> list(page id)'.format(WORDS_APPEARANCE_FILENAME))
+
+    return PAGEID_TO_TITLE_FILENAME, PAGE_LINKS_FILENAME, WORDS_APPEARANCE_FILENAME
