@@ -27,11 +27,7 @@ def get_page_title(results_pages, id_to_page_filename):
     out = []
     done = len(results_pages)
     fd = open(id_to_page_filename, 'r')
-    first_line = True
     for line in fd.readlines():
-        if first_line:
-            first_line = False
-            continue
         id, page = line[:-1].split(' ')
         page = page.replace('_', ' ')
         id = int(id)

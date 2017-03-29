@@ -147,12 +147,8 @@ def load_words_appearance(filename):
     :return:
     """
     fd = open(filename, 'r')
-    first_line = True
     data = {}
     for line in fd.readlines():
-        if first_line:
-            first_line = False
-            continue
         word_id, pages = line[:-1].split(',')
         data[int(word_id)] = [int(a) for a in pages.split()]
     fd.close()
