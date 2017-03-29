@@ -86,6 +86,7 @@ def fetch_titles(wiki_filename, progressBar, print_interval):
     my_id = 1
 
     title = None
+    title_raw = None
 
     print('\nSearch for page titles')
     progressBar.reset_time()
@@ -94,21 +95,22 @@ def fetch_titles(wiki_filename, progressBar, print_interval):
             line = line[:-1]
             line = line.strip()
             if '<title' in line:
-                line = util.lower_and_no_accent(line)
                 match = re.match(re_title, line)
                 if match is None or ':' in match.group(1):
                     continue
-                title = util.normalize_text(match.group(1))
+                title_raw = match.group(1)
+                title = util.normalize_text(util.lower_and_no_accent(title_raw))
             elif '<id' in line and not title is None:
                 match = re.match(re_id, line)
                 if match is None:
                     continue
                 pageID = int(match.group(1))
-                pageID_to_title[pageID] = (my_id, title)
+                pageID_to_title[pageID] = (my_id, title, title_raw)
                 if not title in title_to_pageID:
                     title_to_pageID[title] = []
                 title_to_pageID[title].append(my_id)
                 title = None
+                title_raw = None
                 my_id += 1
 
             if line_count % print_interval == 0:
@@ -213,7 +215,7 @@ def run(wiki_filename, output_dir, dictionary_filename, print_interval=10000, pa
     if output_dir is None:
         return
 
-    PAGEID_TO_TITLE_FILENAME = os.path.join(output_dir, 'pageID_to_title.csv')
+    PAGEID_TO_TITLE_FILENAME = os.path.join(output_dir, 'pageID_to_title.txt')
     PAGE_LINKS_FILENAME = os.path.join(output_dir, 'page_links.txt')
     WORDS_APPEARANCE_FILENAME = os.path.join(output_dir, 'words_appearance.csv')
 
@@ -233,13 +235,6 @@ def run(wiki_filename, output_dir, dictionary_filename, print_interval=10000, pa
     progressBar = util.ProgressBar(WIKI_N_LINES)
 
     pageID_to_title, title_to_pageID = fetch_titles(wiki_filename, progressBar, print_interval)
-
-    # print('Sorting ids for each page titles')
-    # for k, v in page_to_id.items():
-    #     page_to_id[k] = sorted(v)
-    #
-    # print('Sorting id to page array')
-    # id_to_page = sorted(id_to_page.items())
 
     print('Saving [pageID -> title] into file', PAGEID_TO_TITLE_FILENAME)
     util.save_pageID_to_title(PAGEID_TO_TITLE_FILENAME, sorted(pageID_to_title.values()))

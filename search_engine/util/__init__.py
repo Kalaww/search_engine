@@ -191,12 +191,12 @@ def load_page_score(filename):
 
 def save_pageID_to_title(filename, data):
     """
-    Save id_to_page into CSV format with '@' separator
+    Save id_to_page
     :param filename:
     :param data:
     :return:
     """
     with open(filename, 'w') as fd:
-        fd.write('id@page\n')
-        for pageID, title in data:
-            fd.write('{}@{}\n'.format(pageID, title))
+        for pageID, title, title_raw in data:
+            title_raw = title_raw.replace(' ', '_')
+            fd.write('{} {}\n'.format(pageID, title_raw))
