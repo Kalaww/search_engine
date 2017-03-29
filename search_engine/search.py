@@ -1,5 +1,6 @@
 import search_engine.util as util
 
+WIKI_URL = 'https://fr.wikipedia.org/wiki/{page}'
 
 def preprocess_request(request, word_to_id):
     """
@@ -31,7 +32,8 @@ def get_page_title(results_pages, id_to_page_filename):
         if first_line:
             first_line = False
             continue
-        id, page = line[:-1].split('@')
+        id, page = line[:-1].split(' ')
+        page = page.replace('_', ' ')
         id = int(id)
         for pos, page_id in results_pages:
             if page_id == id:
@@ -74,7 +76,7 @@ def search(dictionary_filename, words_appearance_filename, page_score_filename, 
     i = 1
     print('\nRESULTS')
     for title in titles:
-        l = '{}: {}'.format(i, title)
+        l = '{}: {} {}'.format(i, title, WIKI_URL.format(page=title))
         print(l)
         fd.write(l+'\n')
         i += 1
