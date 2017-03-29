@@ -142,7 +142,7 @@ def load_dictionary(filename, with_word_to_id=False, with_id_to_word=False):
 
 def load_words_appearance(filename):
     """
-    Load words appearance file (CSV format with ',' separator)
+    Load words appearance file (with ',' separator)
     :param filename:
     :return:
     """
@@ -161,13 +161,12 @@ def load_words_appearance(filename):
 
 def save_words_appearance(filename, data):
     """
-    Save words appearance data in CSV file format
+    Save words appearance data
     :param filename:
     :param data:
     :return:
     """
     with open(filename, 'w') as fd:
-        fd.write('word_id,page_ids\n')
         for word_id, page_ids in data.items():
             freq,pages = zip(*page_ids)
             fd.write('{},{}\n'.format(word_id, ' '.join([str(a) for a in sorted(pages)])))

@@ -217,7 +217,7 @@ def run(wiki_filename, output_dir, dictionary_filename, print_interval=10000, pa
 
     PAGEID_TO_TITLE_FILENAME = os.path.join(output_dir, 'pageID_to_title.txt')
     PAGE_LINKS_FILENAME = os.path.join(output_dir, 'page_links.txt')
-    WORDS_APPEARANCE_FILENAME = os.path.join(output_dir, 'words_appearance.csv')
+    WORDS_APPEARANCE_FILENAME = os.path.join(output_dir, 'words_appearance.txt')
 
     WIKI_N_LINES = lines_count
     if WIKI_N_LINES is None :
