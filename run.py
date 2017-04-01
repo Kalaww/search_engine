@@ -56,29 +56,29 @@ search_op.add_option('-v', '--verbose', action='store_true', dest='verbose', def
                        help='verbose mode')
 
 
-both_op = OptionParser(usage='usage: %prog both [options]')
-both_op.add_option('-d', '--dictionary', action='store', type='string', dest='dictionary', metavar='FILE',
-                        help='FILE words dictionary in csv [default: %default]', default=DEFAULT_DICTIONARY)
-both_op.add_option('-w', '--wiki', action='store', type='string', dest='wiki', metavar='FILE',
-                        help='FILE that contains a wiki dump')
-both_op.add_option('-o', '--output-dir', action='store', type='string', dest='dir', metavar='FILE',
-                        help='FILE output directory where to store collected data')
-both_op.add_option('-i', '--print-interval', action='store', type='int', dest='interval', metavar='VALUE', default=100000,
-                        help='print progress each VALUE lines [default: %default]')
-both_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
-                        help='specify the number of lines in the wiki file, it avoids the programm to look for it')
-both_op.add_option('-p', '--pages-per-word', action='store', type='int', dest='pages_per_word', metavar='NUMBER',
-                        help='NUMBER of pages per word to save [default: %default]', default=10)
-both_op.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False,
-                       help='verbose mode')
-both_op.add_option('-e', '--epsilon', action='store', dest='epsilon', type='float', default=0.0001,
-                       help='page rank epsilon [default: %default]')
-both_op.add_option('-z', '--zap', action='store', dest='zap', type='float', default=0.0,
-                       help='zap factor [default: %default]')
-both_op.add_option('-s', '--step', action='store_true', dest='print_step', default=False,
-                       help='print number of step')
-both_op.add_option('-a', '--starter', action='store', type='string', dest='starter', default='all',
-                       help='starter vertex for the page rank vector: index of the vertex or \'all\' for all vertices [default: %default]')
+all_op = OptionParser(usage='usage: %prog both [options]')
+all_op.add_option('-d', '--dictionary', action='store', type='string', dest='dictionary', metavar='FILE',
+                  help='FILE words dictionary in csv [default: %default]', default=DEFAULT_DICTIONARY)
+all_op.add_option('-w', '--wiki', action='store', type='string', dest='wiki', metavar='FILE',
+                  help='FILE that contains a wiki dump')
+all_op.add_option('-o', '--output-dir', action='store', type='string', dest='dir', metavar='FILE',
+                  help='FILE output directory where to store collected data')
+all_op.add_option('-i', '--print-interval', action='store', type='int', dest='interval', metavar='VALUE', default=100000,
+                  help='print progress each VALUE lines [default: %default]')
+all_op.add_option('-l', '--line-count', action='store', type='int', dest='lines', metavar='LINES',
+                  help='specify the number of lines in the wiki file, it avoids the programm to look for it')
+all_op.add_option('-p', '--pages-per-word', action='store', type='int', dest='pages_per_word', metavar='NUMBER',
+                  help='NUMBER of pages per word to save [default: %default]', default=10)
+all_op.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False,
+                  help='verbose mode')
+all_op.add_option('-e', '--epsilon', action='store', dest='epsilon', type='float', default=0.0001,
+                  help='page rank epsilon [default: %default]')
+all_op.add_option('-z', '--zap', action='store', dest='zap', type='float', default=0.0,
+                  help='zap factor [default: %default]')
+all_op.add_option('-s', '--step', action='store_true', dest='print_step', default=False,
+                  help='print number of step')
+all_op.add_option('-a', '--starter', action='store', type='string', dest='starter', default='all',
+                  help='starter vertex for the page rank vector: index of the vertex or \'all\' for all vertices [default: %default]')
 
 
 def usage():
@@ -86,7 +86,7 @@ def usage():
     print('\tpagerank\texecute pagerank')
     print('\tcollector\texecute collector')
     print('\tsearch\t\texecute search')
-    print('\tboth\t\texecute collector then pagerank')
+    print('\tall\t\texecute collector then pagerank then search')
 
 
 def main():
@@ -103,8 +103,8 @@ def main():
         run_collector(args[1:])
     elif args[0] == 'search':
         run_search(args[1:])
-    elif args[0] == 'both':
-        run_both(args[1:])
+    elif args[0] == 'all':
+        run_all(args[1:])
     else:
         usage()
 
@@ -171,23 +171,52 @@ def run_collector(args):
         lines_count=lines,
     )
 
+def run_search(args):
+    global search_op
 
-def run_both(args):
-    global both_op
+    (options, args_left) = search_op.parse_args(args=args)
 
-    (options, args_left) = both_op.parse_args(args=args)
+    if not options.dictionary:
+        print('Error: missing words dictionary filename')
+        search_op.print_help()
+        return
+    if not options.words_appearance:
+        print('Error: missing words appearance filename')
+        search_op.print_help()
+        return
+    if not options.pagescore:
+        print('Error: missing pagescore filename')
+        search_op.print_help()
+        return
+    if not options.pageID_to_title:
+        print('Error: missing pageID_to_title filename')
+        search_op.print_help()
+        return
+
+    search(
+        options.dictionary,
+        options.words_appearance,
+        options.pagescore,
+        options.pageID_to_title,
+        verbose=options.verbose
+    )
+
+def run_all(args):
+    global all_op
+
+    (options, args_left) = all_op.parse_args(args=args)
 
     if not options.wiki:
         print('Error: missing wiki dump filename')
-        both_op.print_help()
+        all_op.print_help()
         return
     if not options.dir:
         print('Error: missing ouput directory')
-        both_op.print_help()
+        all_op.print_help()
         return
     if not options.dictionary:
         print('Error: missing words dictionary filename')
-        both_op.print_help()
+        all_op.print_help()
         return
     if options.lines:
         lines = options.lines
@@ -231,35 +260,12 @@ def run_both(args):
         pageID_to_title_filename,
         options.dictionary
     ))
-
-
-def run_search(args):
-    global search_op
-
-    (options, args_left) = search_op.parse_args(args=args)
-
-    if not options.dictionary:
-        print('Error: missing words dictionary filename')
-        search_op.print_help()
-        return
-    if not options.words_appearance:
-        print('Error: missing words appearance filename')
-        search_op.print_help()
-        return
-    if not options.pagescore:
-        print('Error: missing pagescore filename')
-        search_op.print_help()
-        return
-    if not options.pageID_to_title:
-        print('Error: missing pageID_to_title filename')
-        search_op.print_help()
-        return
-
+    print('\n--------------------------------------')
     search(
         options.dictionary,
-        options.words_appearance,
-        options.pagescore,
-        options.pageID_to_title,
+        words_appearance_filename,
+        page_score_filename,
+        pageID_to_title_filename,
         verbose=options.verbose
     )
 
