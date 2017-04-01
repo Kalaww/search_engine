@@ -86,7 +86,7 @@ def usage():
     print('\tpagerank\texecute pagerank')
     print('\tcollector\texecute collector')
     print('\tsearch\t\texecute search')
-    print('\tprepare\t\texecute collector > pagerank')
+    print('\tboth\t\texecute collector then pagerank')
 
 
 def main():
