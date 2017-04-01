@@ -17,7 +17,10 @@ def preprocess_request(request, word_to_id):
 def get_results(request, page_score, words_appearance):
     request_pages = []
     for word_id in request:
-        request_pages.append(set(words_appearance[word_id]))
+        if word_id in words_appearance:
+            request_pages.append(set(words_appearance[word_id]))
+    if len(request_pages) is 0:
+        return None
     request_pages = set.intersection(*request_pages)
     result_pages = [page_id for page_id in page_score if page_id in request_pages]
     return [(i, p) for i,p in enumerate(result_pages)]
@@ -49,13 +52,6 @@ def search(dictionary_filename, words_appearance_filename, page_score_filename, 
         print('Loading dictionary')
     word_to_id = util.load_dictionary(dictionary_filename, with_word_to_id=True)
 
-    print('SEARCH')
-    request = input('-> ')
-    request_id, result_filename = preprocess_request(request, word_to_id)
-    if len(request_id) == 0:
-        print('No result found')
-        return
-
     if verbose:
         print('Loading words appearance ...')
     words_appearance = util.load_words_appearance(words_appearance_filename)
@@ -64,18 +60,31 @@ def search(dictionary_filename, words_appearance_filename, page_score_filename, 
         print('Loading page score ...')
     page_score = util.load_page_score(page_score_filename)
 
-    results_pages = get_results(request_id, page_score, words_appearance)
-    titles = get_page_title(results_pages, pageID_to_title_filename)
+    while True:
+        print('SEARCH (\q to quit)')
+        request = input('-> ')
+        if request == '\q':
+            return
+        request_id, result_filename = preprocess_request(request, word_to_id)
+        if len(request_id) == 0:
+            print('Request contains no words in the dictionary\n')
+            continue
 
-    result_filename += '.txt'
-    fd = open(result_filename, 'w')
-    i = 1
-    print('\nRESULTS')
-    for title in titles:
-        l = '{}: {} {}'.format(i, title, WIKI_URL.format(page=title))
-        print(l)
-        fd.write(l+'\n')
-        i += 1
-    fd.close()
-    print("\nResults saved in '{}'".format(result_filename))
+        results_pages = get_results(request_id, page_score, words_appearance)
+        if results_pages is None:
+            print('No result found\n')
+            continue
+        titles = get_page_title(results_pages, pageID_to_title_filename)
+
+        result_filename += '.txt'
+        fd = open(result_filename, 'w')
+        i = 1
+        print('\nRESULTS')
+        for title in titles:
+            l = '{}: {} {}'.format(i, title, WIKI_URL.format(page=title))
+            print(l)
+            fd.write(l+'\n')
+            i += 1
+        fd.close()
+        print("\nResults saved in '{}'\n".format(result_filename))
 
