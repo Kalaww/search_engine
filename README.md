@@ -1,29 +1,30 @@
 # SEARCH ENGINE
 
 ## RELEASE
-- Version 1 - Page rank : [LINK](https://github.com/kalaww/search_engine/releases/tag/1.0)
-- Version 2 - Page rank + Collector : [LINK](https://github.com/kalaww/search_engine/releases/tag/2.0)
+- Version 1 - Page rank : [LIEN](https://github.com/kalaww/search_engine/releases/tag/1.0)
+- Version 2 - Page rank + Collector : [LIEN](https://github.com/kalaww/search_engine/releases/tag/2.0)
+- Version 3 - Page rank + Collector + Seach : [LIEN](https://github.com/kalaww/search_engine/releases/tag/3.0)
 
 ## INSTALLATION
-Require Python 3
+Requière Python 3
 
-To install the dependencies, type :
+Pour installer les dépendances :
 
 ```
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-## RUN
-Run the program with :
+## EXECUTION
+Lancer le programme avec :
 ```
-$ python3 run.py [options]
+python3 run.py [options]
 ```
 
 #### PAGE RANK
 
 ###### COMMAND LINE
 ```
-$ python3 run.py pagerank [options]
+python3 run.py pagerank [options]
 ```
 ###### OPTIONS
 ```
@@ -41,30 +42,40 @@ $ python3 run.py pagerank [options]
                         starter vertex for the page rank vector: index of the
                         vertex or 'all' for all vertices [default: all]
 ```
+###### EXEMPLE
+```
+python3 run.py pagerank -s -g graph.txt -e 0.01 -z 0.15 -o page_score.txt
+```
 
 #### COLLECTOR
-The french dictionary used for this collector is in `data/dictionary.fr.csv` 
-[LINK](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
+Le fichier contenant le dictionnaire français se situe : `data/dictionary.fr.csv` 
+[LIEN](https://github.com/Kalaww/search_engine/blob/master/data/dictionary.fr.csv)
 
-You can check how I generate this dictionary with this Jupyter Notebook `generate_dictionary.ipynb` (watchable on GitHub) 
-[LINK](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
+Vous pouvez regarder comment a été généré le dictionnaire avec ce Jupyter Notebook `generate_dictionary.ipynb` 
+(visible sur GitHub) 
+[LIEN](https://github.com/Kalaww/search_engine/blob/master/generate_dictionary.ipynb)
 
-The collector creates three files : 
-- `id_to_page.csv` : relation page id -> page title
-- `page_links.txt` : relation page id -> links page id
-- `words_appearance.csv` : relation word id -> list(page id)
+Le collector crée trois fichiers :
+- `pageID_to_title.txt` : relation pageID -> page title
+- `page_links.txt` : relation pageID -> links page id
+- `words_appearance.txt` : relation word id -> list(pageID)
 
-For space efficiency, `words_appearance.csv` store the N page's id for each word with the highest frequency (N is 10 by 
-default, but it can be change with option `-p N`).
+Pour controler la taille du `words_appearance.csv` généré, il ne garde que les N pageID pour chaque mot du dictionnaire 
+qui ont la plus grande fréquence d'apparition dans la page (N vaut 10 par défaut, mais il peut être changé via l'option 
+`-p N`).
 
-Each words in the page's title add 1.0 to the word's frequency in this page. Therefore, this page will be more relevant for
-the corresponding word.
+Chaque mot contenu dans le titre des pages ajoute 1.0 à la fréquence d'apparition de ce mot dans la page. Ainsi, lors 
+d'une recherche, les pages avec les mots recherchés auront plus de chance de ressortir dans les résultats.
 
+Le programme affiche la progression du collector avec une estimation (peu précise) du temps restant. Pour celà, le 
+programme commence par compter le nombre de ligne du fichier XML contenant l'archive wikipedia. Cette étape pouvant 
+être évitée avec l'option `-l N` en précisant le nombre de ligne du fichier.
 
 ###### COMMAND LINE
 ```
-$ python3 run.py collector [options]
+python3 run.py collector [options]
 ```
+
 ###### OPTIONS
 ```
   -h, --help            show this help message and exit
@@ -82,16 +93,32 @@ $ python3 run.py collector [options]
                         NUMBER of pages per word to save [default: 10]
 ```
 
-###### EXAMPLES
-You can test the collector with some partial part of the 'frwiki-20151226-pages-articles.xml'
-- 100 000 first lines (11 MB): [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CNU9Zd2doVm16amc)
-- 1 000 000 first lines (105 MB) : [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CX29XTnpmby11THc)
+###### EXEMPLE
+```
+python3 run.py collector -w wikifr.xml -o result_dir -d dictionary.csv -p 25
+```
+Quelques fichiers de test généré à partir de 'frwiki-20151226-pages-articles.xml'
+- 100 000 premières lignes (11 MB): [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CNU9Zd2doVm16amc)
+- 1 000 000 première lignes (105 MB) : [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CX29XTnpmby11THc)
 
 #### SEARCH
 
+Une fois le programme lancé, ont peut réaliser autant de recherche souhaitée. Chaque résultat est affiché et stocké dans 
+un fichier nommé selon la requête.
+
+Les résultats sont classé par pertinence. Le premier étant le plus pertinent et le dernier le moins pertinent (selon le 
+pagerank).
+
+Le programme search charge les fichiers : dictionnaire, apparence des mots et page score en mémoire. Le fichier de 
+relation [pageID -> titre] est simplement lut une fois par recherche afin de traduire les pageID en titre.
+
+Le nombre de résultat étant conditionné par le nombre de pageID par mot dans le fichier d'apparence des mots généré lors 
+du collector. Ainsi, en modifiant la valeur par défaut (10) avec l'option `-p N` du collector, on obtiendra un nombre N 
+de résultat au maximum.
+
 ###### COMMAND LINE
-```
-$ python3 run.py search [options]
+```commandline
+python3 run.py search [options]
 ```
 
 ###### OPTIONS
@@ -106,4 +133,19 @@ $ python3 run.py search [options]
   -i FILE, --id-to-page=FILE
                         FILE id-to-page filename
   -v, --verbose         verbose mode
+```
+
+###### EXEMPLE
+```commandline
+python3 run.py search -d dictionary.csv -w words_appearance.txt -p pagescore.txt -i pageID_to_title.txt
+```
+
+###### EXEMPLE
+```
+  python3 run.py both \
+    -w data/test0/frwiki-tst-1.xml \
+    -o data/test0 \
+    -z 0.15 \
+    -e 0.01 \
+    -s 
 ```
