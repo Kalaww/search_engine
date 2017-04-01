@@ -144,7 +144,7 @@ python3 run.py search [options]
 python3 run.py search -d dictionary.csv -w words_appearance.txt -p pagescore.txt -i pageID_to_title.txt
 ```
 
-### ALL
+#### ALL
 Le module `all` réalise le collector, le page rank et lance la recherche en une seule commande.
 
 ###### COMMAND LINE
