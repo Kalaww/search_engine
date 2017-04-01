@@ -20,6 +20,12 @@ Lancer le programme avec :
 python3 run.py [options]
 ```
 
+## MODULES
+- [Page rank](#page-rank)
+- [Collector](#collector)
+- [Search](#search)
+- [All](#all)
+
 #### PAGE RANK
 
 ###### COMMAND LINE
@@ -92,7 +98,6 @@ python3 run.py collector [options]
   -p NUMBER, --pages-per-word=NUMBER
                         NUMBER of pages per word to save [default: 10]
 ```
-
 ###### EXEMPLE
 ```
 python3 run.py collector -w wikifr.xml -o result_dir -d dictionary.csv -p 25
@@ -102,7 +107,6 @@ Quelques fichiers de test généré à partir de 'frwiki-20151226-pages-articles
 - 1 000 000 première lignes (105 MB) : [DOWNLOAD](https://drive.google.com/open?id=0BxjKLsDqc12CX29XTnpmby11THc)
 
 #### SEARCH
-
 Une fois le programme lancé, ont peut réaliser autant de recherche souhaitée. Chaque résultat est affiché et stocké dans 
 un fichier nommé selon la requête.
 
@@ -117,7 +121,7 @@ du collector. Ainsi, en modifiant la valeur par défaut (10) avec l'option `-p N
 de résultat au maximum.
 
 ###### COMMAND LINE
-```commandline
+```
 python3 run.py search [options]
 ```
 
@@ -136,13 +140,48 @@ python3 run.py search [options]
 ```
 
 ###### EXEMPLE
-```commandline
+```
 python3 run.py search -d dictionary.csv -w words_appearance.txt -p pagescore.txt -i pageID_to_title.txt
+```
+
+### ALL
+Le module `all` réalise le collector, le page rank et lance la recherche en une seule commande.
+
+###### COMMAND LINE
+```
+python3 run.py all [options]
+```
+
+###### OPTIONS
+```
+Options:
+  -h, --help            show this help message and exit
+  -d FILE, --dictionary=FILE
+                        FILE words dictionary in csv [default:
+                        data/dictionary.fr.csv]
+  -w FILE, --wiki=FILE  FILE that contains a wiki dump
+  -o FILE, --output-dir=FILE
+                        FILE output directory where to store collected data
+  -i VALUE, --print-interval=VALUE
+                        print progress each VALUE lines [default: 100000]
+  -l LINES, --line-count=LINES
+                        specify the number of lines in the wiki file, it
+                        avoids the programm to look for it
+  -p NUMBER, --pages-per-word=NUMBER
+                        NUMBER of pages per word to save [default: 10]
+  -v, --verbose         verbose mode
+  -e EPSILON, --epsilon=EPSILON
+                        page rank epsilon [default: 0.0001]
+  -z ZAP, --zap=ZAP     zap factor [default: 0.0]
+  -s, --step            print number of step
+  -a STARTER, --starter=STARTER
+                        starter vertex for the page rank vector: index of the
+                        vertex or 'all' for all vertices [default: all]
 ```
 
 ###### EXEMPLE
 ```
-  python3 run.py both \
+python3 run.py all \
     -w data/test0/frwiki-tst-1.xml \
     -o data/test0 \
     -z 0.15 \
