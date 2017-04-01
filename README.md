@@ -98,7 +98,7 @@ python3 run.py collector [options]
   -p NUMBER, --pages-per-word=NUMBER
                         NUMBER of pages per word to save [default: 10]
 ```
-###### EXEMPLE
+###### EXEMPLE
 ```
 python3 run.py collector -w wikifr.xml -o result_dir -d dictionary.csv -p 25
 ```
@@ -147,14 +147,12 @@ python3 run.py search -d dictionary.csv -w words_appearance.txt -p pagescore.txt
 #### ALL
 Le module `all` réalise le collector, le page rank et lance la recherche en une seule commande.
 
-###### COMMAND LINE
+###### COMMAND LINE
 ```
 python3 run.py all [options]
 ```
-
-###### OPTIONS
+###### OPTIONS
 ```
-Options:
   -h, --help            show this help message and exit
   -d FILE, --dictionary=FILE
                         FILE words dictionary in csv [default:
